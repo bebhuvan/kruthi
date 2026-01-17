@@ -1,35 +1,36 @@
 # Kruthi
 
-Kruthi is a trust-first EPUB reader with quoted answers, highlights, and local-first AI analysis. It runs on web, desktop, and mobile.
+Kruthi is a trust-first, local-first reading companion for public-domain classics. Download curated books from Standard Ebooks and Project Gutenberg or drop in your own EPUB, then ask questions answered with quoted passages. Deploy the web app on Cloudflare Pages and grab desktop installers from GitHub Releases.
 
 ## What Makes It Different
 
-- Quote-first answers: show passages before explanations, refuse when the text is missing.
-- Local-first by default: books and notes stay on your device; AI is opt-in.
-- One codebase: SvelteKit for web, Tauri for desktop, Capacitor for mobile.
+- Quote-first answers: citations before explanations, with refusals when the text is missing.
+- Local-first by default: your library, highlights, and analysis stay on device; AI is opt-in.
+- Self-hostable: deploy the web build to Cloudflare Pages.
+- Cross-platform: one SvelteKit codebase for web, Tauri for desktop, and Capacitor for mobile.
 
 ## Core Features
 
-Reading
-- EPUB upload and drag/drop import.
+### Reading
+- EPUB upload plus curated downloads.
 - Continuous scroll reading with TOC navigation and in-book search.
 - Typography controls (font family, size, line height, margins, paper texture).
-- Light, sepia, and dark themes; focus mode for distraction-free reading.
+- Light, sepia, and dark themes with focus mode.
 
-Library & Highlights
+### Library & Highlights
 - Bookshelf with reading progress and quick resume.
 - Highlights with notes and multiple colors.
-- Printable highlight export page.
+- Export highlights to Markdown or a printable page.
 
-Vocabulary & Definitions
+### Vocabulary & Definitions
 - Built-in dictionary (Webster's 1913) for fast offline definitions.
 - Vocabulary list and review flow.
 
-AI Companion
+### AI Companion
 - Ask questions with citations from the book.
 - Highlight actions (Explain / Define) with grounded responses.
-- Chapter summaries plus deeper analysis (themes, character profiles).
-- Analysis caching to keep responses fast.
+- Chapter summaries, theme tracking, and character profiles.
+- Analysis caching for faster repeat responses.
 
 ## Privacy & Data
 
@@ -73,6 +74,19 @@ git push origin v0.1.0
 ```
 
 Releases: https://github.com/bebhuvan/kruthi/releases
+
+## Mobile Releases
+
+Capacitor builds are distributed through the app stores (or manual APK sharing), not GitHub Releases.
+
+```bash
+npm run cap:sync
+npx cap open ios
+npx cap open android
+```
+
+- iOS: Archive in Xcode, then upload to TestFlight/App Store.
+- Android: Generate a signed APK/AAB in Android Studio, then upload to Play Console (or share the APK).
 
 ## Docs
 
