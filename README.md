@@ -2,6 +2,8 @@
 
 Kruthi helps you read the great classics for free. Download public-domain books from Standard Ebooks and Project Gutenberg or drop in your own EPUB, then ask questions answered with quoted passages. Deploy the web app on Cloudflare Pages and grab desktop installers from GitHub Releases.
 
+Name: Kruthi (Kannada: ಕೃತಿ, "a literary work") — https://alar.ink/dictionary/kannada/english/%E0%B2%95%E0%B3%83%E0%B2%A4%E0%B2%BF
+
 ## What Makes It Different
 
 - Free public-domain classics: a curated shelf from Standard Ebooks and Project Gutenberg.
@@ -36,6 +38,12 @@ AI in Kruthi is there to help you stay with hard books: quick explanations, defi
 - Highlight actions (Explain / Define) with grounded responses.
 - Chapter summaries, theme tracking, and character profiles.
 - Analysis caching for faster repeat responses.
+
+## Screenshots
+
+![Kruthi home screen](docs/assets/kruthi-home.png)
+![Kruthi reader view](docs/assets/kruthi-book-view.png)
+![Kruthi highlights](docs/assets/kruthi-highlights.png)
 
 ## Privacy & Data
 
