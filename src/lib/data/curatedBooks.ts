@@ -267,23 +267,23 @@ export const curatedBooks: CuratedBook[] = [
 		}
 	},
 	{
-		id: 'animal-farm',
-		title: 'Animal Farm',
-		author: 'George Orwell',
-		year: 1945,
-		hours: 2,
-		hook: 'Power corrupts, in 100 pages',
-		collections: ['start-here', 'political-dystopia', 'short'],
+		id: 'island-of-dr-moreau',
+		title: 'The Island of Dr. Moreau',
+		author: 'H. G. Wells',
+		year: 1896,
+		hours: 3.5,
+		hook: 'A remote island, a mad experiment',
+		collections: ['start-here', 'speculative', 'gothic', 'short'],
 		cover: {
-			letter: 'A',
-			bgColor: '#8b4513',
-			letterColor: '#f5f5dc',
+			letter: 'M',
+			bgColor: '#3d1f1f',
+			letterColor: '#f3e5c0',
 			style: 'filled'
 		},
 		source: {
 			name: 'gutenberg',
-			url: 'https://gutenberg.net.au/pages/orwell.html',
-			epubUrl: 'https://gutenberg.net.au/epub-ebooks/Animal Farm - George Orwell.epub'
+			url: 'https://www.gutenberg.org/ebooks/159',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/159/pg159-images.epub'
 		}
 	},
 	{
@@ -322,9 +322,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/franz-kafka/the-metamorphosis/david-wyllie',
-			epubUrl: 'https://standardebooks.org/ebooks/franz-kafka/the-metamorphosis/david-wyllie/downloads/franz-kafka_the-metamorphosis_david-wyllie.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/5200',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/5200/pg5200-images.epub'
 		}
 	},
 	{
@@ -528,9 +528,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/maurice-leblanc/arsene-lupin-gentleman-burglar/george-morehead',
-			epubUrl: 'https://standardebooks.org/ebooks/maurice-leblanc/arsene-lupin-gentleman-burglar/george-morehead/downloads/maurice-leblanc_arsene-lupin-gentleman-burglar_george-morehead.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/6133',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/6133/pg6133-images.epub'
 		}
 	},
 
@@ -962,9 +962,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/jules-verne/twenty-thousand-leagues-under-the-seas/f-p-walter',
-			epubUrl: 'https://standardebooks.org/ebooks/jules-verne/twenty-thousand-leagues-under-the-seas/f-p-walter/downloads/jules-verne_twenty-thousand-leagues-under-the-seas_f-p-walter.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/164',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/164/pg164-images.epub'
 		}
 	},
 
@@ -1052,23 +1052,23 @@ export const curatedBooks: CuratedBook[] = [
 		}
 	},
 	{
-		id: 'death-ivan-ilyich',
-		title: 'The Death of Ivan Ilyich',
+		id: 'kreutzer-sonata',
+		title: 'The Kreutzer Sonata and Other Stories',
 		author: 'Leo Tolstoy',
-		year: 1886,
-		hours: 3,
-		hook: 'A life examined at its end',
-		collections: ['russian', 'short'],
+		year: 1889,
+		hours: 6,
+		hook: 'Jealousy, confession, and a marriage undone',
+		collections: ['russian', 'short', 'short-stories'],
 		cover: {
-			letter: 'I',
-			bgColor: '#f5f2eb',
-			letterColor: '#2c2c2c',
+			letter: 'K',
+			bgColor: '#2c2c2c',
+			letterColor: '#e8dcc8',
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/leo-tolstoy/the-death-of-ivan-ilyich/louise-maude_aylmer-maude',
-			epubUrl: 'https://standardebooks.org/ebooks/leo-tolstoy/the-death-of-ivan-ilyich/louise-maude_aylmer-maude/downloads/leo-tolstoy_the-death-of-ivan-ilyich_louise-maude_aylmer-maude.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/689',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/689/pg689-images.epub'
 		}
 	},
 	{
@@ -1107,8 +1107,8 @@ export const curatedBooks: CuratedBook[] = [
 		},
 		source: {
 			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/fyodor-dostoevsky/the-idiot/eva-martin',
-			epubUrl: 'https://standardebooks.org/ebooks/fyodor-dostoevsky/the-idiot/eva-martin/downloads/fyodor-dostoevsky_the-idiot_eva-martin.epub'
+			url: 'https://standardebooks.org/ebooks/fyodor-dostoevsky/the-idiot/eva-m-martin',
+			epubUrl: 'https://standardebooks.org/ebooks/fyodor-dostoevsky/the-idiot/eva-m-martin/downloads/fyodor-dostoevsky_the-idiot_eva-m-martin.epub'
 		}
 	},
 	{
@@ -1126,9 +1126,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/ivan-turgenev/fathers-and-sons/constance-garnett',
-			epubUrl: 'https://standardebooks.org/ebooks/ivan-turgenev/fathers-and-sons/constance-garnett/downloads/ivan-turgenev_fathers-and-sons_constance-garnett.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/47935',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/47935/pg47935-images.epub'
 		}
 	},
 	{
@@ -1146,9 +1146,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/mikhail-lermontov/a-hero-of-our-time/j-h-wisdom_marr-murray',
-			epubUrl: 'https://standardebooks.org/ebooks/mikhail-lermontov/a-hero-of-our-time/j-h-wisdom_marr-murray/downloads/mikhail-lermontov_a-hero-of-our-time_j-h-wisdom_marr-murray.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/913',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/913/pg913-images.epub'
 		}
 	},
 	{
@@ -1187,8 +1187,8 @@ export const curatedBooks: CuratedBook[] = [
 		},
 		source: {
 			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/anton-chekhov/the-cherry-orchard/julius-west',
-			epubUrl: 'https://standardebooks.org/ebooks/anton-chekhov/the-cherry-orchard/julius-west/downloads/anton-chekhov_the-cherry-orchard_julius-west.epub'
+			url: 'https://standardebooks.org/ebooks/anton-chekhov/the-cherry-orchard/constance-garnett',
+			epubUrl: 'https://standardebooks.org/ebooks/anton-chekhov/the-cherry-orchard/constance-garnett/downloads/anton-chekhov_the-cherry-orchard_constance-garnett.epub'
 		}
 	},
 
@@ -1209,8 +1209,8 @@ export const curatedBooks: CuratedBook[] = [
 		},
 		source: {
 			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/lewis-carroll/alices-adventures-in-wonderland',
-			epubUrl: 'https://standardebooks.org/ebooks/lewis-carroll/alices-adventures-in-wonderland/downloads/lewis-carroll_alices-adventures-in-wonderland.epub'
+			url: 'https://standardebooks.org/ebooks/lewis-carroll/alices-adventures-in-wonderland/john-tenniel',
+			epubUrl: 'https://standardebooks.org/ebooks/lewis-carroll/alices-adventures-in-wonderland/john-tenniel/downloads/lewis-carroll_alices-adventures-in-wonderland_john-tenniel.epub'
 		}
 	},
 	{
@@ -1383,23 +1383,23 @@ export const curatedBooks: CuratedBook[] = [
 
 	// === POLITICAL DYSTOPIA & UTOPIAS ===
 	{
-		id: '1984',
-		title: '1984',
-		author: 'George Orwell',
-		year: 1949,
-		hours: 8,
-		hook: 'Big Brother is watching',
-		collections: ['bucket-list', 'all-time-greats', 'political-dystopia'],
+		id: 'we',
+		title: 'We',
+		author: 'Yevgeny Zamyatin',
+		year: 1924,
+		hours: 6,
+		hook: 'The original dystopia behind the dystopias',
+		collections: ['bucket-list', 'all-time-greats', 'world-classics', 'political-dystopia', 'russian'],
 		cover: {
-			letter: '84',
-			bgColor: '#e8e4dc',
-			letterColor: '#1a1a1a',
-			style: 'filled'
+			letter: 'W',
+			bgColor: '#1a1a1a',
+			letterColor: '#e8e4dc',
+			style: 'outlined'
 		},
 		source: {
-			name: 'gutenberg',
-			url: 'https://gutenberg.net.au/pages/orwell.html',
-			epubUrl: 'https://gutenberg.net.au/epub-ebooks/Nineteen eighty-four - George Orwell.epub'
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/yevgeny-zamyatin/we/gregory-zilboorg',
+			epubUrl: 'https://standardebooks.org/ebooks/yevgeny-zamyatin/we/gregory-zilboorg/downloads/yevgeny-zamyatin_we_gregory-zilboorg.epub'
 		}
 	},
 	{
@@ -1831,9 +1831,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/thomas-paine/common-sense',
-			epubUrl: 'https://standardebooks.org/ebooks/thomas-paine/common-sense/downloads/thomas-paine_common-sense.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/147',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/147/pg147-images.epub'
 		}
 	},
 	{
@@ -1873,9 +1873,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/plato/the-republic/benjamin-jowett',
-			epubUrl: 'https://standardebooks.org/ebooks/plato/the-republic/benjamin-jowett/downloads/plato_the-republic_benjamin-jowett.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/1497',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/1497/pg1497-images.epub'
 		}
 	},
 	{
@@ -2080,9 +2080,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/vyasa/the-bhagavad-gita/edwin-arnold',
-			epubUrl: 'https://standardebooks.org/ebooks/vyasa/the-bhagavad-gita/edwin-arnold/downloads/vyasa_the-bhagavad-gita_edwin-arnold.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/2388',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/2388/pg2388-images.epub'
 		}
 	},
 	{
@@ -2527,9 +2527,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/franz-kafka/the-trial/david-wyllie',
-			epubUrl: 'https://standardebooks.org/ebooks/franz-kafka/the-trial/david-wyllie/downloads/franz-kafka_the-trial_david-wyllie.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/7849',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/7849/pg7849-images.epub'
 		}
 	},
 	{
@@ -2731,9 +2731,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/johann-wolfgang-von-goethe/faust/bayard-taylor',
-			epubUrl: 'https://standardebooks.org/ebooks/johann-wolfgang-von-goethe/faust/bayard-taylor/downloads/johann-wolfgang-von-goethe_faust_bayard-taylor.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/14591',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/14591/pg14591-images.epub'
 		}
 	},
 	{
@@ -2851,9 +2851,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/victor-hugo/the-hunchback-of-notre-dame/isabel-f-hapgood',
-			epubUrl: 'https://standardebooks.org/ebooks/victor-hugo/the-hunchback-of-notre-dame/isabel-f-hapgood/downloads/victor-hugo_the-hunchback-of-notre-dame_isabel-f-hapgood.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/2610',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/2610/pg2610-images.epub'
 		}
 	},
 	{
@@ -2913,9 +2913,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/emily-dickinson/poetry',
-			epubUrl: 'https://standardebooks.org/ebooks/emily-dickinson/poetry/downloads/emily-dickinson_poetry.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/12242',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/12242/pg12242-images.epub'
 		}
 	},
 	{
@@ -2933,9 +2933,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/william-blake/poetry',
-			epubUrl: 'https://standardebooks.org/ebooks/william-blake/poetry/downloads/william-blake_poetry.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/574',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/574/pg574-images.epub'
 		}
 	},
 	{
@@ -2960,11 +2960,11 @@ export const curatedBooks: CuratedBook[] = [
 	},
 	{
 		id: 'shelley-poems',
-		title: 'Poems',
+		title: 'The Complete Poetical Works',
 		author: 'Percy Bysshe Shelley',
 		year: 1820,
-		hours: 5,
-		hook: 'Look on my Works, ye Mighty',
+		hours: 12,
+		hook: 'Radical lyricism, from “Ozymandias” onward',
 		collections: ['poetry'],
 		cover: {
 			letter: 'S',
@@ -2973,9 +2973,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/percy-bysshe-shelley/poetry',
-			epubUrl: 'https://standardebooks.org/ebooks/percy-bysshe-shelley/poetry/downloads/percy-bysshe-shelley_poetry.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/4800',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/4800/pg4800-images.epub'
 		}
 	},
 	{
@@ -3014,14 +3014,14 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/william-shakespeare/sonnets',
-			epubUrl: 'https://standardebooks.org/ebooks/william-shakespeare/sonnets/downloads/william-shakespeare_sonnets.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/1041',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/1041/pg1041-images.epub'
 		}
 	},
 	{
 		id: 'wordsworth-poems',
-		title: 'Poems',
+		title: 'The Poetical Works — Volume 1',
 		author: 'William Wordsworth',
 		year: 1807,
 		hours: 6,
@@ -3034,9 +3034,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/william-wordsworth/poetry',
-			epubUrl: 'https://standardebooks.org/ebooks/william-wordsworth/poetry/downloads/william-wordsworth_poetry.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/10219',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/10219/pg10219-images.epub'
 		}
 	},
 	{
@@ -3097,21 +3097,21 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/blaise-pascal/pensees/w-f-trotter',
-			epubUrl: 'https://standardebooks.org/ebooks/blaise-pascal/pensees/w-f-trotter/downloads/blaise-pascal_pensees_w-f-trotter.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/18269',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/18269/pg18269-images.epub'
 		}
 	},
 
 	// === STOIC PHILOSOPHY ===
 	{
 		id: 'seneca-letters',
-		title: 'Letters from a Stoic',
+		title: "Seneca's Morals of a Happy Life",
 		author: 'Seneca',
 		year: 65,
-		hours: 12,
-		hook: 'Practical wisdom for daily life',
-		collections: ['philosophy', 'religion', 'bucket-list'],
+		hours: 8,
+		hook: 'A Stoic guide to calm, anger, and clemency',
+		collections: ['philosophy', 'religion'],
 		cover: {
 			letter: 'S',
 			bgColor: '#2c3e50',
@@ -3119,9 +3119,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/seneca/letters/richard-mott-gummere',
-			epubUrl: 'https://standardebooks.org/ebooks/seneca/letters/richard-mott-gummere/downloads/seneca_letters_richard-mott-gummere.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/56075',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/56075/pg56075-images.epub'
 		}
 	},
 	{
@@ -3201,9 +3201,9 @@ export const curatedBooks: CuratedBook[] = [
 			style: 'filled'
 		},
 		source: {
-			name: 'standard-ebooks',
-			url: 'https://standardebooks.org/ebooks/confucius/the-analects/james-legge',
-			epubUrl: 'https://standardebooks.org/ebooks/confucius/the-analects/james-legge/downloads/confucius_the-analects_james-legge.epub'
+			name: 'gutenberg',
+			url: 'https://www.gutenberg.org/ebooks/3330',
+			epubUrl: 'https://www.gutenberg.org/cache/epub/3330/pg3330-images.epub'
 		}
 	},
 	{
