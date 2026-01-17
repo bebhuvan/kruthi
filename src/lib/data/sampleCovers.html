@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Cover Designs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Spectral:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Spectral', serif;
+      background: #1a1a1a;
+      padding: 60px;
+      min-height: 100vh;
+    }
+    h1 {
+      color: #fff;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 2rem;
+      margin-bottom: 50px;
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 220px));
+      gap: 40px;
+      justify-content: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .cover-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cover {
+      width: 200px;
+      height: 300px;
+      border-radius: 4px;
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.4),
+        0 1px 2px rgba(0,0,0,0.2),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+      overflow: hidden;
+      position: relative;
+    }
+    .cover::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 12px;
+      background: linear-gradient(90deg, rgba(0,0,0,0.15) 0%, transparent 100%);
+    }
+    .label {
+      color: #888;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    svg { display: block; }
+  </style>
+</head>
+<body>
+  <h1>CURATED CLASSICS — COVER DESIGNS</h1>
+
+  <div class="grid">
+
+    <!-- The Great Gatsby -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gatsby-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#1a3a4a"/>
+              <stop offset="100%" style="stop-color:#0d252f"/>
+            </linearGradient>
+            <pattern id="gatsby-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="10" cy="10" r="0.5" fill="rgba(212,175,55,0.2)"/>
+            </pattern>
+          </defs>
+          <rect width="200" height="300" fill="url(#gatsby-bg)"/>
+          <rect width="200" height="300" fill="url(#gatsby-pattern)"/>
+          <!-- Decorative lines -->
+          <line x1="30" y1="45" x2="170" y2="45" stroke="#d4af37" stroke-width="0.5" opacity="0.4"/>
+          <line x1="30" y1="255" x2="170" y2="255" stroke="#d4af37" stroke-width="0.5" opacity="0.4"/>
+          <!-- Author -->
+          <text x="100" y="32" text-anchor="middle" fill="#d4af37" font-family="'Cormorant Garamond', serif" font-size="9" letter-spacing="0.15em" opacity="0.9">F. SCOTT FITZGERALD</text>
+          <!-- Main letter G -->
+          <text x="100" y="190" text-anchor="middle" fill="none" stroke="#d4af37" stroke-width="1" font-family="'Cormorant Garamond', serif" font-size="140" font-weight="300">G</text>
+          <!-- Title -->
+          <text x="100" y="275" text-anchor="middle" fill="#fff" font-family="'Cormorant Garamond', serif" font-size="11" letter-spacing="0.12em" font-weight="400">THE GREAT GATSBY</text>
+        </svg>
+      </div>
+      <span class="label">The Great Gatsby</span>
+    </div>
+
+    <!-- Pride and Prejudice -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="pride-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#8b4557"/>
+              <stop offset="100%" style="stop-color:#5c2e3a"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="300" fill="url(#pride-bg)"/>
+          <!-- Subtle frame -->
+          <rect x="20" y="20" width="160" height="260" fill="none" stroke="#f5e6d3" stroke-width="0.5" opacity="0.3"/>
+          <rect x="25" y="25" width="150" height="250" fill="none" stroke="#f5e6d3" stroke-width="0.5" opacity="0.2"/>
+          <!-- Author -->
+          <text x="100" y="50" text-anchor="middle" fill="#f5e6d3" font-family="'Cormorant Garamond', serif" font-size="9" letter-spacing="0.15em" opacity="0.9">JANE AUSTEN</text>
+          <!-- Main letter P with floral essence -->
+          <text x="100" y="185" text-anchor="middle" fill="#f5e6d3" font-family="'Cormorant Garamond', serif" font-size="150" font-weight="300" opacity="0.9">P</text>
+          <!-- Small decorative element -->
+          <circle cx="100" cy="230" r="2" fill="#f5e6d3" opacity="0.5"/>
+          <!-- Title -->
+          <text x="100" y="260" text-anchor="middle" fill="#f5e6d3" font-family="'Cormorant Garamond', serif" font-size="9" letter-spacing="0.08em" font-weight="400">PRIDE AND PREJUDICE</text>
+        </svg>
+      </div>
+      <span class="label">Pride and Prejudice</span>
+    </div>
+
+    <!-- Sherlock Holmes -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="300" fill="#2a2a28"/>
+          <!-- Fog effect -->
+          <ellipse cx="100" cy="200" rx="120" ry="80" fill="#3d3d3a" opacity="0.3"/>
+          <!-- Author -->
+          <text x="100" y="35" text-anchor="middle" fill="#c9a227" font-family="'Cormorant Garamond', serif" font-size="8" letter-spacing="0.2em">ARTHUR CONAN DOYLE</text>
+          <!-- Thin line -->
+          <line x1="50" y1="48" x2="150" y2="48" stroke="#c9a227" stroke-width="0.5" opacity="0.5"/>
+          <!-- Main letter S - detective silhouette inspired -->
+          <text x="100" y="190" text-anchor="middle" fill="#c9a227" font-family="'Cormorant Garamond', serif" font-size="160" font-weight="400">S</text>
+          <!-- Title -->
+          <text x="100" y="258" text-anchor="middle" fill="#e8e4dc" font-family="'Cormorant Garamond', serif" font-size="8" letter-spacing="0.1em">THE ADVENTURES OF</text>
+          <text x="100" y="275" text-anchor="middle" fill="#e8e4dc" font-family="'Cormorant Garamond', serif" font-size="10" letter-spacing="0.12em" font-weight="500">SHERLOCK HOLMES</text>
+        </svg>
+      </div>
+      <span class="label">Sherlock Holmes</span>
+    </div>
+
+    <!-- Frankenstein -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="frank-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#1f2f1f"/>
+              <stop offset="100%" style="stop-color:#0f170f"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="300" fill="url(#frank-bg)"/>
+          <!-- Lightning suggestion -->
+          <path d="M95 60 L100 90 L105 75 L108 110" stroke="#7fff7f" stroke-width="1" fill="none" opacity="0.3"/>
+          <!-- Author -->
+          <text x="100" y="35" text-anchor="middle" fill="#9cb99c" font-family="'Cormorant Garamond', serif" font-size="9" letter-spacing="0.15em">MARY SHELLEY</text>
+          <!-- Main letter F -->
+          <text x="105" y="195" text-anchor="middle" fill="#9cb99c" font-family="'Cormorant Garamond', serif" font-size="160" font-weight="300">F</text>
+          <!-- Subtitle and title -->
+          <text x="100" y="252" text-anchor="middle" fill="#9cb99c" font-family="'Cormorant Garamond', serif" font-size="12" letter-spacing="0.1em" font-weight="500">FRANKENSTEIN</text>
+          <text x="100" y="270" text-anchor="middle" fill="#9cb99c" font-family="'Cormorant Garamond', serif" font-size="7" letter-spacing="0.08em" opacity="0.7">OR, THE MODERN PROMETHEUS</text>
+        </svg>
+      </div>
+      <span class="label">Frankenstein</span>
+    </div>
+
+    <!-- The Odyssey -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="odyssey-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#1e3d59"/>
+              <stop offset="100%" style="stop-color:#0f1e2d"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="300" fill="url(#odyssey-bg)"/>
+          <!-- Wave pattern suggestion -->
+          <path d="M0 220 Q50 210 100 220 T200 220" stroke="#e8d5b5" stroke-width="0.5" fill="none" opacity="0.2"/>
+          <path d="M0 230 Q50 220 100 230 T200 230" stroke="#e8d5b5" stroke-width="0.5" fill="none" opacity="0.15"/>
+          <path d="M0 240 Q50 230 100 240 T200 240" stroke="#e8d5b5" stroke-width="0.5" fill="none" opacity="0.1"/>
+          <!-- Author -->
+          <text x="100" y="35" text-anchor="middle" fill="#e8d5b5" font-family="'Cormorant Garamond', serif" font-size="10" letter-spacing="0.2em">HOMER</text>
+          <!-- Greek key line -->
+          <line x1="40" y1="48" x2="160" y2="48" stroke="#e8d5b5" stroke-width="0.5" opacity="0.4"/>
+          <!-- Main letter O -->
+          <text x="100" y="180" text-anchor="middle" fill="none" stroke="#e8d5b5" stroke-width="1.5" font-family="'Cormorant Garamond', serif" font-size="140" font-weight="300">O</text>
+          <!-- Title -->
+          <text x="100" y="268" text-anchor="middle" fill="#e8d5b5" font-family="'Cormorant Garamond', serif" font-size="14" letter-spacing="0.15em" font-weight="400">THE ODYSSEY</text>
+        </svg>
+      </div>
+      <span class="label">The Odyssey</span>
+    </div>
+
+    <!-- Crime and Punishment -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="300" fill="#1a1a1a"/>
+          <!-- Blood red accent -->
+          <rect x="0" y="145" width="200" height="2" fill="#8b0000" opacity="0.6"/>
+          <!-- Author -->
+          <text x="100" y="35" text-anchor="middle" fill="#d4d4d4" font-family="'Cormorant Garamond', serif" font-size="8" letter-spacing="0.12em">FYODOR DOSTOEVSKY</text>
+          <!-- Main letter - Cyrillic-inspired but Latin -->
+          <text x="100" y="185" text-anchor="middle" fill="#d4d4d4" font-family="'Cormorant Garamond', serif" font-size="150" font-weight="300">Д</text>
+          <!-- Title -->
+          <text x="100" y="252" text-anchor="middle" fill="#d4d4d4" font-family="'Cormorant Garamond', serif" font-size="9" letter-spacing="0.05em">CRIME AND</text>
+          <text x="100" y="270" text-anchor="middle" fill="#d4d4d4" font-family="'Cormorant Garamond', serif" font-size="11" letter-spacing="0.1em" font-weight="500">PUNISHMENT</text>
+        </svg>
+      </div>
+      <span class="label">Crime and Punishment</span>
+    </div>
+
+    <!-- 1984 -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="300" fill="#e8e4dc"/>
+          <!-- Stark black rectangle -->
+          <rect x="30" y="80" width="140" height="140" fill="#1a1a1a"/>
+          <!-- The number as design -->
+          <text x="100" y="175" text-anchor="middle" fill="#e8e4dc" font-family="'Cormorant Garamond', serif" font-size="70" font-weight="600">1984</text>
+          <!-- Author -->
+          <text x="100" y="40" text-anchor="middle" fill="#1a1a1a" font-family="'Cormorant Garamond', serif" font-size="9" letter-spacing="0.15em">GEORGE ORWELL</text>
+          <!-- Minimal eye suggestion -->
+          <ellipse cx="100" cy="250" rx="15" ry="8" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+          <circle cx="100" cy="250" r="3" fill="#1a1a1a"/>
+          <!-- Title below -->
+          <text x="100" y="280" text-anchor="middle" fill="#1a1a1a" font-family="'Cormorant Garamond', serif" font-size="8" letter-spacing="0.1em">A NOVEL</text>
+        </svg>
+      </div>
+      <span class="label">1984</span>
+    </div>
+
+    <!-- Dracula -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="dracula-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#2d0a0a"/>
+              <stop offset="100%" style="stop-color:#0d0303"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="300" fill="url(#dracula-bg)"/>
+          <!-- Blood drip suggestion -->
+          <path d="M100 0 L100 35 Q100 45 100 50" stroke="#8b0000" stroke-width="2" fill="none" opacity="0.6"/>
+          <!-- Author -->
+          <text x="100" y="70" text-anchor="middle" fill="#c9c9c9" font-family="'Cormorant Garamond', serif" font-size="9" letter-spacing="0.15em">BRAM STOKER</text>
+          <!-- Main letter D with gothic feel -->
+          <text x="100" y="195" text-anchor="middle" fill="#8b0000" font-family="'Cormorant Garamond', serif" font-size="160" font-weight="400">D</text>
+          <!-- Title -->
+          <text x="100" y="268" text-anchor="middle" fill="#c9c9c9" font-family="'Cormorant Garamond', serif" font-size="16" letter-spacing="0.2em" font-weight="400">DRACULA</text>
+        </svg>
+      </div>
+      <span class="label">Dracula</span>
+    </div>
+
+    <!-- Meditations -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="300" fill="#f5f2eb"/>
+          <!-- Simple geometric frame -->
+          <rect x="25" y="25" width="150" height="250" fill="none" stroke="#2c2c2c" stroke-width="0.5"/>
+          <!-- Author -->
+          <text x="100" y="55" text-anchor="middle" fill="#2c2c2c" font-family="'Cormorant Garamond', serif" font-size="7" letter-spacing="0.15em">MARCUS AURELIUS</text>
+          <!-- Main letter M - stoic, clean -->
+          <text x="100" y="180" text-anchor="middle" fill="#2c2c2c" font-family="'Cormorant Garamond', serif" font-size="130" font-weight="300">M</text>
+          <!-- Title -->
+          <text x="100" y="245" text-anchor="middle" fill="#2c2c2c" font-family="'Cormorant Garamond', serif" font-size="11" letter-spacing="0.12em">MEDITATIONS</text>
+          <!-- Small laurel suggestion -->
+          <path d="M85 260 Q100 255 115 260" stroke="#2c2c2c" stroke-width="0.5" fill="none" opacity="0.5"/>
+        </svg>
+      </div>
+      <span class="label">Meditations</span>
+    </div>
+
+    <!-- Don Quixote -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="quixote-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#c4a35a"/>
+              <stop offset="100%" style="stop-color:#8b7355"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="300" fill="url(#quixote-bg)"/>
+          <!-- Windmill blade suggestion -->
+          <line x1="100" y1="100" x2="100" y2="50" stroke="#3d2914" stroke-width="1" opacity="0.3"/>
+          <line x1="100" y1="100" x2="140" y2="120" stroke="#3d2914" stroke-width="1" opacity="0.3"/>
+          <line x1="100" y1="100" x2="100" y2="150" stroke="#3d2914" stroke-width="1" opacity="0.3"/>
+          <line x1="100" y1="100" x2="60" y2="80" stroke="#3d2914" stroke-width="1" opacity="0.3"/>
+          <!-- Author -->
+          <text x="100" y="35" text-anchor="middle" fill="#3d2914" font-family="'Cormorant Garamond', serif" font-size="8" letter-spacing="0.12em">MIGUEL DE CERVANTES</text>
+          <!-- Main letter Q -->
+          <text x="100" y="195" text-anchor="middle" fill="#3d2914" font-family="'Cormorant Garamond', serif" font-size="150" font-weight="300">Q</text>
+          <!-- Title -->
+          <text x="100" y="262" text-anchor="middle" fill="#3d2914" font-family="'Cormorant Garamond', serif" font-size="10" letter-spacing="0.08em">DON QUIXOTE</text>
+          <text x="100" y="278" text-anchor="middle" fill="#3d2914" font-family="'Cormorant Garamond', serif" font-size="6" letter-spacing="0.05em" opacity="0.7">DE LA MANCHA</text>
+        </svg>
+      </div>
+      <span class="label">Don Quixote</span>
+    </div>
+
+    <!-- War and Peace -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="300" fill="#f0ebe3"/>
+          <!-- Diagonal divide suggesting war/peace -->
+          <polygon points="0,0 200,0 200,150" fill="#2c3e50"/>
+          <!-- Author -->
+          <text x="100" y="30" text-anchor="middle" fill="#f0ebe3" font-family="'Cormorant Garamond', serif" font-size="8" letter-spacing="0.15em">LEO TOLSTOY</text>
+          <!-- Main letters W overlapping with ampersand feel -->
+          <text x="70" y="175" text-anchor="middle" fill="#2c3e50" font-family="'Cormorant Garamond', serif" font-size="100" font-weight="300">W</text>
+          <text x="130" y="200" text-anchor="middle" fill="#c9a227" font-family="'Cormorant Garamond', serif" font-size="100" font-weight="300">P</text>
+          <!-- Title -->
+          <text x="100" y="255" text-anchor="middle" fill="#2c3e50" font-family="'Cormorant Garamond', serif" font-size="9" letter-spacing="0.05em">WAR AND PEACE</text>
+          <!-- Small decorative -->
+          <line x1="60" y1="268" x2="140" y2="268" stroke="#2c3e50" stroke-width="0.5" opacity="0.4"/>
+        </svg>
+      </div>
+      <span class="label">War and Peace</span>
+    </div>
+
+    <!-- The Divine Comedy -->
+    <div class="cover-container">
+      <div class="cover">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="dante-bg" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" style="stop-color:#1a0a0a"/>
+              <stop offset="50%" style="stop-color:#4a2c2a"/>
+              <stop offset="100%" style="stop-color:#c9a227"/>
+            </linearGradient>
+          </defs>
+          <rect width="200" height="300" fill="url(#dante-bg)"/>
+          <!-- Concentric circles suggesting the structure -->
+          <circle cx="100" cy="150" r="60" fill="none" stroke="#f5e6d3" stroke-width="0.3" opacity="0.3"/>
+          <circle cx="100" cy="150" r="45" fill="none" stroke="#f5e6d3" stroke-width="0.3" opacity="0.3"/>
+          <circle cx="100" cy="150" r="30" fill="none" stroke="#f5e6d3" stroke-width="0.3" opacity="0.3"/>
+          <!-- Author -->
+          <text x="100" y="30" text-anchor="middle" fill="#f5e6d3" font-family="'Cormorant Garamond', serif" font-size="10" letter-spacing="0.2em">DANTE</text>
+          <!-- Main letter D -->
+          <text x="100" y="175" text-anchor="middle" fill="#f5e6d3" font-family="'Cormorant Garamond', serif" font-size="100" font-weight="300">D</text>
+          <!-- Title -->
+          <text x="100" y="250" text-anchor="middle" fill="#f5e6d3" font-family="'Cormorant Garamond', serif" font-size="8" letter-spacing="0.1em">THE DIVINE</text>
+          <text x="100" y="268" text-anchor="middle" fill="#f5e6d3" font-family="'Cormorant Garamond', serif" font-size="12" letter-spacing="0.15em" font-weight="500">COMEDY</text>
+        </svg>
+      </div>
+      <span class="label">The Divine Comedy</span>
+    </div>
+
+  </div>
+</body>
+</html>

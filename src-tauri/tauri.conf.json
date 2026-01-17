@@ -1,0 +1,62 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "Kruthi",
+  "version": "0.1.0",
+  "identifier": "com.kruthi.reader",
+  "build": {
+    "frontendDist": "../build",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm run dev:tauri:web",
+    "beforeBuildCommand": "npm run build:tauri:web"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Kruthi",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 600,
+        "minHeight": 400,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "plugins": {
+    "sql": {
+      "preload": [
+        "sqlite:kruthi.db"
+      ]
+    },
+    "updater": {
+      "endpoints": [
+        "https://releases.kruthi.app/{{target}}/{{current_version}}"
+      ],
+      "pubkey": "REPLACE_WITH_YOUR_PUBLIC_KEY"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "fileAssociations": [
+      {
+        "ext": [
+          "epub"
+        ],
+        "mimeType": "application/epub+zip",
+        "description": "EPUB Document"
+      }
+    ]
+  }
+}

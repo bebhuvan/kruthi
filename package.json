@@ -1,0 +1,74 @@
+{
+	"name": "kruthi",
+	"private": true,
+	"version": "0.0.1",
+	"license": "MIT",
+	"type": "module",
+	"homepage": "https://github.com/bebhuvan/kruthi",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bebhuvan/kruthi.git"
+	},
+	"bugs": {
+		"url": "https://github.com/bebhuvan/kruthi/issues"
+	},
+	"scripts": {
+		"dev": "vite dev",
+		"dev:tauri:web": "BUILD_TARGET=tauri vite dev --config vite.config.tauri.ts",
+		"dev:tauri": "tauri dev",
+		"build": "vite build",
+		"build:tauri:web": "BUILD_TARGET=tauri vite build --config vite.config.tauri.ts",
+		"build:tauri": "tauri build",
+		"build:capacitor": "BUILD_TARGET=capacitor vite build --config vite.config.capacitor.ts",
+		"cap:sync": "npm run build:capacitor && npx cap sync",
+		"cap:ios": "npm run cap:sync && npx cap open ios",
+		"cap:android": "npm run cap:sync && npx cap open android",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"tauri": "tauri",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-cloudflare": "^7.2.4",
+		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/kit": "^2.49.1",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@tauri-apps/cli": "^2.9.6",
+		"autoprefixer": "^10.4.23",
+		"fake-indexeddb": "^6.2.5",
+		"postcss": "^8.5.6",
+		"svelte": "^5.45.6",
+		"svelte-check": "^4.3.4",
+		"tailwindcss": "^4.1.18",
+		"typescript": "^5.9.3",
+		"vite": "^7.2.6",
+		"vitest": "^4.0.16"
+	},
+	"dependencies": {
+		"@capacitor-community/sqlite": "^7.0.3",
+		"@capacitor/android": "^8.0.1",
+		"@capacitor/cli": "^8.0.1",
+		"@capacitor/core": "^8.0.1",
+		"@capacitor/filesystem": "^8.0.0",
+		"@capacitor/ios": "^8.0.1",
+		"@capacitor/preferences": "^8.0.0",
+		"@tauri-apps/api": "^2.9.1",
+		"@tauri-apps/plugin-dialog": "^2.6.0",
+		"@tauri-apps/plugin-fs": "^2.4.5",
+		"@tauri-apps/plugin-sql": "^2.3.1",
+		"@tauri-apps/plugin-store": "^2.4.2",
+		"@xenova/transformers": "^2.17.2",
+		"dompurify": "^3.3.1",
+		"epubjs": "^0.3.93",
+		"idb": "^8.0.3",
+		"marked": "^17.0.1"
+	},
+	"overrides": {
+		"cookie": "^0.7.0",
+		"tar": "^7.5.3",
+		"undici": "^7.18.2"
+	}
+}

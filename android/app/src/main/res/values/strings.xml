@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kruthi</string>
+    <string name="title_activity_main">Kruthi</string>
+    <string name="package_name">com.kruthi.app</string>
+    <string name="custom_url_scheme">com.kruthi.app</string>
+</resources>
