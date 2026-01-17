@@ -1,6 +1,6 @@
 # Kruthi
 
-A trust-first EPUB reader with refined typography, continuous scroll, and a retrieval backend that can surface quoted passages from the book. Everything runs locally in the browser: uploads, storage, and retrieval indexing.
+Kruthi is a trust-first EPUB reader with quoted answers, highlights, and local-first AI analysis. It runs on web, desktop, and mobile.
 
 ## Status
 
