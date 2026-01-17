@@ -50,3 +50,14 @@ Mobile builds require signing keys and platform tooling:
 - iOS: build from `ios/` using Xcode and ship via TestFlight.
 
 We recommend keeping mobile releases manual until you add signing secrets to CI.
+
+Quick flow:
+
+```bash
+npm run cap:sync
+npx cap open ios
+npx cap open android
+```
+
+- iOS: Archive in Xcode, then upload to TestFlight/App Store.
+- Android: Generate a signed APK/AAB in Android Studio, then upload to Play Console (or share the APK).
