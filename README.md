@@ -1,8 +1,8 @@
 # Kruthi
 
-Kruthi helps you read the great classics for free. Download public-domain books from Standard Ebooks and Project Gutenberg or drop in your own EPUB, then ask questions answered with quoted passages. Deploy the web app on Cloudflare Pages and grab desktop installers from GitHub Releases.
+Kruthi is an EPUB reader with a quote-first AI reading companion. Download public-domain books from Standard Ebooks and Project Gutenberg or drop in your own EPUB, then ask questions answered with quoted passages. Deploy the web app on Cloudflare Pages and grab desktop installers from GitHub Releases.
 
-Name: Kruthi (Kannada: ಕೃತಿ, "a literary work") — https://alar.ink/dictionary/kannada/english/%E0%B2%95%E0%B3%83%E0%B2%A4%E0%B2%BF
+Name: Kruthi (Kannada: ಕೃತಿ, "a literary work") — [alar.ink](https://alar.ink/dictionary/kannada/english/%E0%B2%95%E0%B3%83%E0%B2%A4%E0%B2%BF)
 
 ## What Makes It Different
 
