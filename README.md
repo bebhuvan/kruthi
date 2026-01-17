@@ -1,9 +1,10 @@
 # Kruthi
 
-Kruthi is a trust-first, local-first reading companion for public-domain classics. Download curated books from Standard Ebooks and Project Gutenberg or drop in your own EPUB, then ask questions answered with quoted passages. Deploy the web app on Cloudflare Pages and grab desktop installers from GitHub Releases.
+Kruthi helps you read the great classics for free. Download public-domain books from Standard Ebooks and Project Gutenberg or drop in your own EPUB, then ask questions answered with quoted passages. Deploy the web app on Cloudflare Pages and grab desktop installers from GitHub Releases.
 
 ## What Makes It Different
 
+- Free public-domain classics: a curated shelf from Standard Ebooks and Project Gutenberg.
 - Quote-first answers: citations before explanations, with refusals when the text is missing.
 - Local-first by default: your library, highlights, and analysis stay on device; AI is opt-in.
 - Self-hostable: deploy the web build to Cloudflare Pages.
@@ -27,6 +28,10 @@ Kruthi is a trust-first, local-first reading companion for public-domain classic
 - Vocabulary list and review flow.
 
 ### AI Companion
+#### Why AI
+
+AI in Kruthi is there to help you stay with hard books: quick explanations, definitions, and grounded answers when the text is dense. It does not replace reading; it keeps you moving and makes the classics feel more approachable. Everything is citation-first and can be turned off.
+
 - Ask questions with citations from the book.
 - Highlight actions (Explain / Define) with grounded responses.
 - Chapter summaries, theme tracking, and character profiles.
