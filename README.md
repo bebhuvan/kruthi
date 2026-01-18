@@ -107,6 +107,16 @@ npx cap open android
 - `docs/setup.md`
 - `docs/releasing.md`
 
+## Website
+
+The project site lives at `docs/index.html`. To publish it on GitHub Pages:
+
+1. Open repo Settings → Pages.
+2. Set Source to `main` and Folder to `/docs`.
+3. Save and wait for the site to deploy.
+
+Default URL: https://bebhuvan.github.io/kruthi/
+
 ## License
 
 MIT. See `LICENSE`.
