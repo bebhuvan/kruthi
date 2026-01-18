@@ -1,13 +1,13 @@
 :root {
-  --bg: #fdfbf7;
-  --bg-soft: #f8f5f0;
-  --ink: #1b1916;
-  --muted: #6b645b;
-  --accent: #e06b46;
-  --accent-dark: #c65c3b;
-  --accent-2: #2a8a78;
+  --bg: #fffdf9;
+  --bg-soft: #f7f3ee;
+  --ink: #1d1a17;
+  --muted: #6f665b;
+  --accent: #f17f5a;
+  --accent-dark: #d26d4c;
+  --accent-2: #7bc6a8;
   --card: #ffffff;
-  --border: rgba(27, 25, 22, 0.12);
+  --border: rgba(29, 26, 23, 0.1);
   --shadow: none;
   --font-display: "Instrument Serif", "Times New Roman", serif;
   --font-body: "Manrope", "Helvetica Neue", sans-serif;
@@ -25,7 +25,10 @@ body {
   margin: 0;
   font-family: var(--font-body);
   color: var(--ink);
-  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+  background:
+    radial-gradient(900px 520px at 15% -15%, rgba(241, 127, 90, 0.08), transparent 60%),
+    radial-gradient(820px 520px at 110% 5%, rgba(123, 198, 168, 0.1), transparent 60%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
   min-height: 100vh;
 }
 
@@ -41,7 +44,7 @@ button:focus-visible {
 }
 
 .container {
-  width: min(1120px, 92vw);
+  width: min(1040px, 92vw);
   margin: 0 auto;
 }
 
@@ -58,8 +61,8 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0;
-  gap: 20px;
+  padding: 22px 0;
+  gap: 24px;
 }
 
 .logo {
@@ -81,8 +84,8 @@ button:focus-visible {
 
 .nav-links {
   display: flex;
-  gap: 18px;
-  font-size: 0.95rem;
+  gap: 22px;
+  font-size: 0.92rem;
   color: var(--muted);
 }
 
@@ -95,20 +98,20 @@ button:focus-visible {
 }
 
 .hero {
-  padding: 110px 0 70px;
+  padding: 140px 0 90px;
 }
 
 .hero-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 40px;
+  gap: 56px;
   align-items: center;
 }
 
 .hero-copy h1 {
   font-family: var(--font-display);
   font-size: clamp(2.6rem, 3vw + 1.8rem, 4rem);
-  margin: 12px 0 18px;
+  margin: 14px 0 22px;
   line-height: 1.05;
 }
 
@@ -123,21 +126,21 @@ button:focus-visible {
 .lead {
   font-size: 1.1rem;
   color: var(--muted);
-  line-height: 1.7;
+  line-height: 1.8;
 }
 
 .cta {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin: 24px 0 18px;
+  gap: 16px;
+  margin: 28px 0 22px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 20px;
+  padding: 13px 22px;
   border-radius: 999px;
   border: 1px solid var(--border);
   font-weight: 600;
@@ -176,7 +179,7 @@ button:focus-visible {
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 16px;
   font-size: 0.9rem;
   color: var(--muted);
 }
@@ -199,14 +202,14 @@ button:focus-visible {
 }
 
 section {
-  padding: 70px 0;
+  padding: 96px 0;
 }
 
 .section-head {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .section-head h2 {
@@ -218,7 +221,8 @@ section {
 .section-head p {
   margin: 0;
   color: var(--muted);
-  max-width: 560px;
+  max-width: 600px;
+  line-height: 1.7;
 }
 
 .cards,
@@ -226,7 +230,7 @@ section {
 .roadmap-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  gap: 24px;
 }
 
 .card,
@@ -234,8 +238,8 @@ section {
 .roadmap-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 22px;
+  border-radius: 24px;
+  padding: 28px;
   box-shadow: none;
 }
 
@@ -251,17 +255,17 @@ section {
 .roadmap-card p {
   margin: 0 0 16px;
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .screens {
-  padding-top: 40px;
+  padding-top: 60px;
 }
 
 .screen-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 28px;
+  gap: 30px;
 }
 
 .screen-card {
@@ -279,7 +283,7 @@ section {
 }
 
 .screen-card figcaption {
-  padding: 16px 18px 20px;
+  padding: 18px 20px 22px;
   color: var(--muted);
   font-size: 0.95rem;
 }
@@ -288,14 +292,14 @@ section {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 210px;
+  min-height: 230px;
 }
 
 .download-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .sub-link {
@@ -315,7 +319,7 @@ section {
 
 .site-footer {
   border-top: 1px solid rgba(27, 25, 22, 0.08);
-  padding: 40px 0 60px;
+  padding: 60px 0 80px;
 }
 
 .footer-grid {
