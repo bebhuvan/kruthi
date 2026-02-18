@@ -952,11 +952,13 @@
 				event.preventDefault();
 				break;
 
-			// Toggle focus mode
-			case 'f':
-				settingsStore.toggleFocusMode();
-				event.preventDefault();
-				break;
+				// Toggle focus mode
+				case 'f':
+					if (!event.ctrlKey && !event.metaKey && !event.altKey) {
+						settingsStore.toggleFocusMode();
+						event.preventDefault();
+					}
+					break;
 
 			// Open search
 			case '/':

@@ -20,6 +20,13 @@ export type ParseOptions = {
 };
 
 const ALLOWED_TAGS = [
+	'div',
+	'section',
+	'article',
+	'header',
+	'footer',
+	'main',
+	'nav',
 	'p',
 	'span',
 	'a',
@@ -40,9 +47,24 @@ const ALLOWED_TAGS = [
 	'h5',
 	'h6',
 	'blockquote',
+	'figure',
+	'figcaption',
 	'ul',
 	'ol',
 	'li',
+	'dl',
+	'dt',
+	'dd',
+	'table',
+	'thead',
+	'tbody',
+	'tfoot',
+	'tr',
+	'th',
+	'td',
+	'caption',
+	'colgroup',
+	'col',
 	'br',
 	'hr'
 ];
@@ -51,7 +73,8 @@ function sanitizeHtml(html: string): string {
 	if (typeof window === 'undefined') {
 		return html;
 	}
-	return DOMPurify.sanitize(html, {
+	const normalized = normalizeInlineStageDirections(html);
+	return DOMPurify.sanitize(normalized, {
 		ALLOWED_TAGS,
 		ALLOWED_ATTR: [
 			'href',
@@ -67,6 +90,37 @@ function sanitizeHtml(html: string): string {
 		FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form'],
 		ALLOW_UNKNOWN_PROTOCOLS: false
 	});
+}
+
+function normalizeInlineStageDirections(html: string): string {
+	if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
+		return html;
+	}
+
+	const doc = new DOMParser().parseFromString(html, 'text/html');
+	const candidates = doc.body.querySelectorAll(
+		'[epub\\:type*=\"stage-direction\"], [epub\\:type*=\"stage\"], .stage-direction, .stagedirection'
+	);
+
+	candidates.forEach((node) => {
+		const text = node.textContent?.trim() ?? '';
+		if (!text) return;
+		if (text.startsWith('(') && text.endsWith(')')) return;
+
+		const parent = node.parentElement;
+		if (!parent) return;
+
+		// Preserve standalone dramatic directions like "Enter Jack."
+		const isStandaloneParagraph =
+			parent.tagName === 'P' &&
+			parent.childElementCount === 1 &&
+			(parent.textContent?.trim() ?? '') === text;
+		if (isStandaloneParagraph) return;
+
+		node.textContent = `(${text})`;
+	});
+
+	return doc.body.innerHTML;
 }
 
 type TocMeta = {

@@ -138,23 +138,8 @@
 		margin-bottom: 0.5em;
 	}
 
-	/* When a paragraph or div has multiple sibling links, treat as navigation */
-	.chapter-body :global(p > a + a),
-	.chapter-body :global(div > a + a) {
-		margin-left: 0;
-	}
-
-	/* Style paragraphs/divs that contain only links as navigation blocks */
-	.chapter-body :global(p:has(a):not(:has(:not(a):not(br):not(span)))) {
-		text-indent: 0;
-		line-height: 2;
-	}
-
-	.chapter-body :global(p:has(a):not(:has(:not(a):not(br):not(span))) a) {
-		display: inline-block;
-		margin-right: 1.5em;
-		margin-bottom: 0.25em;
-	}
+	/* Avoid treating normal prose paragraphs with inline links as navigation.
+	   Keep navigation behavior only for explicit nav/toc containers. */
 
 	/* Headings */
 	.chapter-body :global(h1),
@@ -226,6 +211,15 @@
 
 	.chapter-body :global(strong) {
 		font-weight: 600;
+	}
+
+	/* Stage directions in many EPUBs wrap names as <i><b>Name</b></i>.
+	   Avoid artificial bolding in that context. */
+	.chapter-body :global(i b),
+	.chapter-body :global(i strong),
+	.chapter-body :global(em b),
+	.chapter-body :global(em strong) {
+		font-weight: inherit;
 	}
 
 	/* Lists */
@@ -378,7 +372,8 @@
 	/* Tables */
 	.chapter-body :global(table) {
 		width: 100%;
-		border-collapse: collapse;
+		border-collapse: separate;
+		border-spacing: 0;
 		margin: 1.75em 0;
 		font-size: 0.9em;
 	}
@@ -386,17 +381,12 @@
 	.chapter-body :global(th),
 	.chapter-body :global(td) {
 		padding: 0.6em 0.75em;
-		border-bottom: 1px solid var(--border);
 		text-align: left;
+		border: none;
 	}
 
 	.chapter-body :global(th) {
 		font-weight: 500;
-		border-bottom-width: 2px;
-	}
-
-	.chapter-body :global(tr:last-child td) {
-		border-bottom: none;
 	}
 
 	/* Divs - sometimes used for structure */
