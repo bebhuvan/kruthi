@@ -15,6 +15,7 @@
 		DEFAULT_SYSTEM_PROMPT,
 		HIGHLIGHT_COLORS
 	} from '$lib/config/constants';
+	import { APP_VERSION } from '$lib/config/version';
 	import type { FontFamily, HighlightColor, TextAlign, Theme } from '$lib/types/settings';
 
 	const highlightColorOptions: { value: HighlightColor; label: string; color: string }[] = [
@@ -96,6 +97,11 @@
 	};
 
 	$: isDefaultPrompt = systemPrompt.trim() === DEFAULT_SYSTEM_PROMPT.trim();
+	const runtimeTarget = import.meta.env.TAURI
+		? 'Desktop (Tauri)'
+		: import.meta.env.CAPACITOR
+			? 'Mobile (Capacitor)'
+			: 'Web';
 </script>
 
 <div class="settings-page">
@@ -784,6 +790,26 @@
 				</div>
 			</section>
 
+			<section class="settings-section">
+				<h2 class="section-title">About</h2>
+				<div class="section-content">
+					<div class="setting-row">
+						<div class="setting-info">
+							<span class="setting-label">App version</span>
+							<span class="setting-description">Use this when reporting bugs or checking updates</span>
+						</div>
+						<code class="version-pill">v{APP_VERSION}</code>
+					</div>
+					<div class="setting-row">
+						<div class="setting-info">
+							<span class="setting-label">Runtime</span>
+							<span class="setting-description">Current app target on this device</span>
+						</div>
+						<span class="runtime-pill">{runtimeTarget}</span>
+					</div>
+				</div>
+			</section>
+
 		</div>
 	</main>
 </div>
@@ -1378,6 +1404,21 @@
 
 	.color-swatch svg {
 		opacity: 0.7;
+	}
+
+	.version-pill,
+	.runtime-pill {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 6px 10px;
+		border-radius: var(--radius-full);
+		background: var(--bg-tertiary);
+		border: 1px solid var(--border);
+		color: var(--text-secondary);
+		font-size: var(--text-xs);
+		font-family: var(--font-mono);
+		line-height: 1;
 	}
 
 	/* Responsive - Tablet */
