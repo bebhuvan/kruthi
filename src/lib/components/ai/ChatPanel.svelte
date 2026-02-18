@@ -24,10 +24,37 @@
 	let citationViewerLoading = false;
 	let citationViewerError = '';
 	let citationContext: CitationContext | null = null;
+	const GENERAL_MODE_CONFIRM_KEY = 'kruthi-general-mode-confirmed';
 
 	const dispatch = createEventDispatcher<{ jump: { chapterId?: string; chunkId: string } }>();
 
 	const closePanel = () => chatStore.close();
+
+	const handleModeChange = (event: CustomEvent<{ mode: 'grounded' | 'companion' | 'general' }>) => {
+		const nextMode = event.detail.mode;
+		if (nextMode !== 'general') {
+			chatStore.setMode(nextMode);
+			return;
+		}
+
+		if (typeof window === 'undefined') {
+			chatStore.setMode(nextMode);
+			return;
+		}
+
+		const alreadyConfirmed = window.localStorage.getItem(GENERAL_MODE_CONFIRM_KEY) === 'true';
+		if (alreadyConfirmed) {
+			chatStore.setMode(nextMode);
+			return;
+		}
+
+		const confirmed = window.confirm(
+			'General AI mode is not grounded in the current book and may answer without citations. Continue?'
+		);
+		if (!confirmed) return;
+		window.localStorage.setItem(GENERAL_MODE_CONFIRM_KEY, 'true');
+		chatStore.setMode(nextMode);
+	};
 
 	const sendQuestion = async () => {
 		const trimmed = question.trim();
@@ -119,8 +146,10 @@
 			<h2 class="chat-title">Ask the book</h2>
 			{#if $chatStore.mode === 'grounded'}
 				<p class="chat-subtitle">Quote-first, grounded in the text</p>
-			{:else}
+			{:else if $chatStore.mode === 'companion'}
 				<p class="chat-subtitle">Companion mode: interpretive, labeled context</p>
+			{:else}
+				<p class="chat-subtitle">General AI mode: direct response, not book-grounded</p>
 			{/if}
 		</div>
 		<button
@@ -136,8 +165,12 @@
 	</header>
 
 	<div class="chat-options">
-		<ScopeToggle scope={$chatStore.scope} on:change={(event) => chatStore.setScope(event.detail.scope)} />
-		<ModeToggle mode={$chatStore.mode} on:change={(event) => chatStore.setMode(event.detail.mode)} />
+		{#if $chatStore.mode !== 'general'}
+			<ScopeToggle scope={$chatStore.scope} on:change={(event) => chatStore.setScope(event.detail.scope)} />
+		{:else}
+			<p class="api-hint">General mode ignores chapter/book scope and skips citations.</p>
+		{/if}
+		<ModeToggle mode={$chatStore.mode} on:change={handleModeChange} />
 		<div class="style-row">
 			<span class="style-label">Answer style</span>
 				<select
@@ -162,7 +195,7 @@
 		{/if}
 	</div>
 
-	{#if proactiveSuggestions.length > 0}
+	{#if $chatStore.mode !== 'general' && proactiveSuggestions.length > 0}
 		<div class="suggestions">
 			<p class="suggestions-title">Suggestions based on your reading</p>
 			<div class="suggestions-list">
@@ -180,8 +213,10 @@
 			<div class="empty-state">
 				{#if $chatStore.mode === 'grounded'}
 					Ask about characters, themes, or details. Answers will quote the text before explaining.
-				{:else}
+				{:else if $chatStore.mode === 'companion'}
 					Ask about themes, reception, or meaning. Context answers are labeled and never invent quotes.
+				{:else}
+					Ask anything. Responses may use general knowledge and are not tied to this book.
 				{/if}
 			</div>
 		{:else}

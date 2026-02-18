@@ -29,6 +29,16 @@
 	>
 		Companion
 	</button>
+	<button
+		type="button"
+		role="radio"
+		aria-checked={mode === 'general'}
+		class="mode-option"
+		class:active={mode === 'general'}
+		on:click={() => setMode('general')}
+	>
+		General AI
+	</button>
 </div>
 
 <style>

@@ -1,7 +1,7 @@
 import type { SearchScope } from '$lib/types/retrieval';
 import type { FeedbackRating } from '$lib/types/readerProfile';
 
-export type ChatMode = 'grounded' | 'companion';
+export type ChatMode = 'grounded' | 'companion' | 'general';
 export type AnswerStyle = 'balanced' | 'brief' | 'teacher' | 'exam';
 
 export interface Citation {
@@ -20,6 +20,7 @@ export interface ToolCall {
 export interface ChatMessage {
 	id: string;
 	role: 'user' | 'assistant';
+	mode?: ChatMode;
 	content: string;
 	citations?: Citation[];
 	createdAt: number;

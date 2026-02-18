@@ -26,6 +26,12 @@ Adjust for genre:
 - Nonfiction: argument, evidence, framing, historical context.
 - Genre fiction: tropes, pacing, worldbuilding, theme.`;
 
+const GENERAL_SYSTEM_INSTRUCTIONS = `You are a general-purpose assistant.
+Answer directly using general knowledge and reasoning.
+Do not claim answers are from the current book.
+Do not invent citations or chunk IDs.
+Be clear, concise, and practical.`;
+
 function formatExcerpts(excerpts: Chunk[]): string {
 	return excerpts
 		.map(
@@ -57,7 +63,11 @@ export function buildQaPrompt(
 	};
 
 	const baseInstructions =
-		mode === 'companion' ? COMPANION_SYSTEM_INSTRUCTIONS : GROUNDED_SYSTEM_INSTRUCTIONS;
+		mode === 'general'
+			? GENERAL_SYSTEM_INSTRUCTIONS
+			: mode === 'companion'
+				? COMPANION_SYSTEM_INSTRUCTIONS
+				: GROUNDED_SYSTEM_INSTRUCTIONS;
 	// Combine custom prompt with base instructions
 	const systemParts = [customSystemPrompt, baseInstructions, `Style: ${styleInstructions[answerStyle]}`].filter(Boolean);
 	const system = systemParts.join('\n\n');
@@ -65,7 +75,9 @@ export function buildQaPrompt(
 	return {
 		system,
 		user:
-			mode === 'companion'
+			mode === 'general'
+				? `Question: ${question}\n\nMode: general (not book-grounded)\n\nRespond clearly and directly.`
+				: mode === 'companion'
 				? `Question: ${question}\nScope: ${scopeLabel}\n\nBook excerpts:\n${excerptBlock}\n\nResponse format:\nIf excerpts are relevant:\nQuoted passages:\n- "quote" (chunk_id: X, chapter: Y)\n\nExplanation:\n<grounded in quotes>\n\nOptional Context:\n<labeled "Context" if needed>\n\nIf excerpts are not relevant:\nContext:\n<2-4 short paragraphs, interpretive, no quotes>`
 				: `Question: ${question}\nScope: ${scopeLabel}\n\nBook excerpts:\n${excerptBlock}\n\nResponse format:\nQuoted passages:\n- "quote" (chunk_id: X, chapter: Y)\n\nExplanation:\n<grounded in quotes>\n\nContext (only if asked):\n<external knowledge, labeled>`
 	};

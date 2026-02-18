@@ -304,12 +304,16 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 	const resolvedScope = resolveChapterScope(params.scope, params.chapterId);
 	const resolvedOpenRouterModel = await resolveOpenRouterModel(params.openRouterModel);
 	const resolvedAnthropicModels = await resolveAnthropicModels(anthropicApiKey ?? '');
-	const results = await searchChunks(params.question, params.book.id, {
-		scope: resolvedScope.scope,
-		chapterId: resolvedScope.chapterId,
-		topK: DEFAULT_TOP_K
-	});
-	const excerpts = results.map((result) => result.chunk);
+	const excerpts =
+		params.mode === 'general'
+			? []
+			: (
+				await searchChunks(params.question, params.book.id, {
+					scope: resolvedScope.scope,
+					chapterId: resolvedScope.chapterId,
+					topK: DEFAULT_TOP_K
+				})
+			).map((result) => result.chunk);
 	const chunkLookup = new Map<string, Chunk>(
 		excerpts.map((excerpt) => [excerpt.id, excerpt])
 	);
@@ -392,10 +396,12 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 					: resolvedAnthropicModels.flagship,
 				max_tokens: DEFAULT_MAX_TOKENS,
 				system: prompt.system,
-				messages,
-				tools: TOOLS,
-				tool_choice: { type: 'auto' }
+				messages
 			};
+			if (params.mode !== 'general') {
+				body.tools = TOOLS;
+				body.tool_choice = { type: 'auto' };
+			}
 			if (params.useExtendedThinking) {
 				const budget = Math.max(1000, params.thinkingBudget ?? DEFAULT_THINKING_BUDGET);
 				body.thinking = { type: 'enabled', budget_tokens: budget };
@@ -410,7 +416,7 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 				params.signal
 			);
 
-		if (streamResult.toolCalls.length > 0) {
+		if (params.mode !== 'general' && streamResult.toolCalls.length > 0) {
 			const toolResults = await Promise.all(
 				streamResult.toolCalls.map((tool) =>
 					resolveToolCall(tool, {
@@ -448,7 +454,7 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 		responseText = streamResult.text;
 	}
 
-	const citations = parseCitations(responseText, chunkLookup);
+	const citations = params.mode === 'general' ? [] : parseCitations(responseText, chunkLookup);
 	const groundedNotFound = params.mode === 'grounded' && isNotFoundResponse(responseText);
 	return {
 		text: responseText,

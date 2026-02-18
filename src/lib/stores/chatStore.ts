@@ -153,6 +153,7 @@ function createChatStore() {
 			const userMessage: ChatMessage = {
 				id: crypto.randomUUID(),
 				role: 'user',
+				mode: stateSnapshot.mode,
 				content: params.question.trim(),
 				createdAt: Date.now(),
 				chapterId: params.chapterId
@@ -161,6 +162,7 @@ function createChatStore() {
 			const assistantMessage: ChatMessage = {
 				id: crypto.randomUUID(),
 				role: 'assistant',
+				mode: stateSnapshot.mode,
 				content: '',
 				createdAt: Date.now(),
 				chapterId: params.chapterId,
@@ -214,6 +216,7 @@ function createChatStore() {
 					content: response.text,
 					citations: response.citations,
 					notFound: response.notFound,
+					mode: stateSnapshot.mode,
 					isStreaming: false
 				});
 				update((state) => ({ ...state, isStreaming: false }));

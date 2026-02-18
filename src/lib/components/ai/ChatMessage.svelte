@@ -42,6 +42,9 @@
 
 <div class="message-container">
 	<div class="message" class:user={message.role === 'user'} class:assistant={message.role === 'assistant'}>
+		{#if message.role === 'assistant' && message.mode === 'general'}
+			<p class="mode-badge">General AI response · not book-grounded</p>
+		{/if}
 		{#if message.notFound}
 			<p class="not-found">Not found in this book.</p>
 		{/if}
@@ -121,6 +124,21 @@
 	.not-found {
 		font-weight: 500;
 		margin-bottom: var(--space-2);
+	}
+
+	.mode-badge {
+		display: inline-flex;
+		align-items: center;
+		margin-bottom: var(--space-2);
+		padding: 2px 8px;
+		border-radius: var(--radius-full);
+		font-size: 10px;
+		line-height: 1.3;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: var(--text-secondary);
+		background: var(--bg-tertiary);
+		border: 1px solid var(--border);
 	}
 
 	.message-content {
