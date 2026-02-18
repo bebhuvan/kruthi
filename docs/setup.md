@@ -29,7 +29,7 @@ Desktop polish (Phase 4) adds:
 - Native application menu with Open Book (Cmd/Ctrl+O) and fullscreen toggle.
 - .epub file associations so double-click opens Kruthi.
 - Window size/position persistence (stored in localStorage).
-- Updater configuration in `src-tauri/tauri.conf.json` (replace the endpoint and public key).
+- In-app updater wiring in Settings -> Updates (requires signed releases).
 
 ## PWA
 

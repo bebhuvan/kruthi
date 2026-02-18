@@ -39,6 +39,20 @@
 	let showOpenAiKey = false;
 	let showGeminiKey = false;
 	let showAdvanced = false;
+	type UpdaterHandle = {
+		version: string;
+		currentVersion: string;
+		date?: string;
+		body?: string;
+		downloadAndInstall: (
+			onEvent?: (event: { event: 'Started' | 'Progress' | 'Finished'; data?: Record<string, number> }) => void
+		) => Promise<void>;
+	};
+	let updaterHandle: UpdaterHandle | null = null;
+	let updateStatus: 'idle' | 'checking' | 'available' | 'upToDate' | 'downloading' | 'installed' | 'error' = 'idle';
+	let updateMessage = '';
+	let updateProgressPct: number | null = null;
+	let updateReleaseDate = '';
 
 	const themes: { value: Theme; label: string }[] = [
 		{ value: 'light', label: 'Light' },
@@ -102,6 +116,77 @@
 		: import.meta.env.CAPACITOR
 			? 'Mobile (Capacitor)'
 			: 'Web';
+	const canUseDesktopUpdater = Boolean(import.meta.env.TAURI);
+
+	const formatUpdateError = (error: unknown): string => {
+		const message = error instanceof Error ? error.message : String(error);
+		if (/pubkey/i.test(message) || /signature/i.test(message)) {
+			return 'Updater signing is not configured yet. Please use the latest installer from GitHub Releases.';
+		}
+		if (/endpoint|404|network|fetch/i.test(message)) {
+			return 'Update server is unavailable right now. Please try again or install from GitHub Releases.';
+		}
+		return `Update check failed: ${message}`;
+	};
+
+	const checkForUpdates = async () => {
+		if (!canUseDesktopUpdater) return;
+		updateStatus = 'checking';
+		updateMessage = 'Checking for updates...';
+		updateProgressPct = null;
+		try {
+			const updater = await import('@tauri-apps/plugin-updater');
+			const result = await updater.check();
+			if (!result) {
+				updaterHandle = null;
+				updateReleaseDate = '';
+				updateStatus = 'upToDate';
+				updateMessage = `You are up to date (v${APP_VERSION}).`;
+				return;
+			}
+			updaterHandle = result as UpdaterHandle;
+			updateReleaseDate = result.date ? new Date(result.date).toLocaleDateString() : '';
+			updateStatus = 'available';
+			updateMessage = `Update available: v${result.version} (current v${result.currentVersion}).`;
+		} catch (error) {
+			updaterHandle = null;
+			updateReleaseDate = '';
+			updateStatus = 'error';
+			updateMessage = formatUpdateError(error);
+		}
+	};
+
+	const installAvailableUpdate = async () => {
+		if (!updaterHandle) return;
+		updateStatus = 'downloading';
+		updateProgressPct = 0;
+		updateMessage = `Downloading v${updaterHandle.version}...`;
+		try {
+			let totalBytes = 0;
+			let downloaded = 0;
+			await updaterHandle.downloadAndInstall((event) => {
+				if (event.event === 'Started') {
+					totalBytes = Number(event.data?.contentLength ?? 0);
+					downloaded = 0;
+					updateProgressPct = totalBytes > 0 ? 0 : null;
+					return;
+				}
+				if (event.event === 'Progress') {
+					downloaded += Number(event.data?.chunkLength ?? 0);
+					if (totalBytes > 0) {
+						updateProgressPct = Math.min(100, Math.round((downloaded / totalBytes) * 100));
+					}
+				}
+			});
+			updateStatus = 'installed';
+			updateProgressPct = 100;
+			updateMessage = 'Update installed. Please restart Kruthi to apply it.';
+			updaterHandle = null;
+		} catch (error) {
+			updateStatus = 'error';
+			updateMessage = formatUpdateError(error);
+		}
+	};
 </script>
 
 <div class="settings-page">
@@ -809,6 +894,62 @@
 					</div>
 				</div>
 			</section>
+			{#if canUseDesktopUpdater}
+				<section class="settings-section">
+					<h2 class="section-title">Updates</h2>
+					<div class="section-content">
+						<div class="setting-row">
+							<div class="setting-info">
+								<span class="setting-label">Desktop updates</span>
+								<span class="setting-description">Check for and install the latest release in-app</span>
+							</div>
+							<button
+								type="button"
+								class="action-btn"
+								on:click={checkForUpdates}
+								disabled={updateStatus === 'checking' || updateStatus === 'downloading'}
+							>
+								{updateStatus === 'checking' ? 'Checking…' : 'Check for updates'}
+							</button>
+						</div>
+						{#if updateStatus !== 'idle'}
+							<div class="setting-row stacked">
+								<div class="setting-info">
+									<span class="setting-label">Status</span>
+									<span class="setting-description">{updateMessage}</span>
+								</div>
+								{#if updateStatus === 'available' && updaterHandle}
+									<div class="update-meta">
+										<span>Latest: v{updaterHandle.version}</span>
+										{#if updateReleaseDate}
+											<span>Released: {updateReleaseDate}</span>
+										{/if}
+									</div>
+									{#if updaterHandle.body}
+										<p class="update-notes">{updaterHandle.body}</p>
+									{/if}
+									<button type="button" class="action-btn primary" on:click={installAvailableUpdate}>
+										Download and install
+									</button>
+								{/if}
+								{#if updateStatus === 'downloading'}
+									<div class="update-progress">
+										<div
+											class="update-progress-bar"
+											style="width: {updateProgressPct === null ? 15 : updateProgressPct}%"
+										></div>
+									</div>
+								{/if}
+								{#if updateStatus === 'error'}
+									<p class="update-help">
+										Manual fallback: download latest installer from GitHub Releases.
+									</p>
+								{/if}
+							</div>
+						{/if}
+					</div>
+				</section>
+			{/if}
 
 		</div>
 	</main>
@@ -1419,6 +1560,71 @@
 		font-size: var(--text-xs);
 		font-family: var(--font-mono);
 		line-height: 1;
+	}
+
+	.action-btn {
+		padding: 8px 12px;
+		font-size: var(--text-xs);
+		font-weight: 500;
+		color: var(--text-secondary);
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+		transition: all var(--transition-fast);
+	}
+
+	.action-btn:hover:not(:disabled) {
+		color: var(--text-primary);
+		background: var(--bg-tertiary);
+	}
+
+	.action-btn:disabled {
+		opacity: 0.6;
+		cursor: default;
+	}
+
+	.action-btn.primary {
+		color: var(--bg-primary);
+		background: var(--text-primary);
+		border-color: var(--text-primary);
+	}
+
+	.update-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+		font-size: var(--text-xs);
+		color: var(--text-secondary);
+	}
+
+	.update-notes {
+		font-size: var(--text-sm);
+		color: var(--text-secondary);
+		line-height: 1.45;
+		white-space: pre-wrap;
+		background: var(--bg-primary);
+		border: 1px solid var(--border);
+		padding: var(--space-3);
+		border-radius: var(--radius-md);
+	}
+
+	.update-progress {
+		width: 100%;
+		height: 8px;
+		border-radius: 999px;
+		background: var(--bg-tertiary);
+		overflow: hidden;
+	}
+
+	.update-progress-bar {
+		height: 100%;
+		background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+		transition: width 0.2s ease-out;
+	}
+
+	.update-help {
+		font-size: var(--text-xs);
+		color: var(--text-tertiary);
 	}
 
 	/* Responsive - Tablet */

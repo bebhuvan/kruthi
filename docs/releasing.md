@@ -15,6 +15,9 @@ This repo ships three distribution targets:
    - `CODE_OF_CONDUCT.md`
 2. Create a GitHub repo and push `main`.
 3. Enable GitHub Releases and GitHub Security Advisories.
+4. Configure Tauri updater signing secrets in GitHub repository settings:
+   - `TAURI_SIGNING_PRIVATE_KEY` (full private key content)
+   - `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` (if your key has one)
 
 ## CI
 
@@ -42,6 +45,13 @@ git push origin v0.1.0
 
 GitHub Actions will build and attach desktop installers to the release.
 It will also generate and upload `SHA256SUMS.txt` automatically.
+With signing secrets configured, it will also publish updater metadata (`latest.json`) for in-app updates.
+
+### Desktop In-App Updater Notes
+
+- Updater endpoint is configured to `https://github.com/bebhuvan/kruthi/releases/latest/download/latest.json`.
+- Users can open Settings -> Updates and click `Check for updates`.
+- If updater config/signing is broken, manual installer updates still work.
 
 ## Release (Mobile)
 

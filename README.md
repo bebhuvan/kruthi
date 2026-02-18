@@ -105,6 +105,7 @@ git push origin v0.1.0
 Releases: https://github.com/bebhuvan/kruthi/releases/latest
 
 Every release includes `SHA256SUMS.txt` for integrity verification.
+Desktop app also supports in-app update checks in Settings -> Updates.
 
 ## Mobile Releases
 

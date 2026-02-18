@@ -29,11 +29,13 @@ Use this checklist for every user-facing release.
   - `git push origin vX.Y.Z`
 - [ ] Verify GitHub Actions release job succeeds
 - [ ] Verify installers and `SHA256SUMS.txt` are attached
+- [ ] Verify `latest.json` is attached (for in-app updater)
 
 ## 5) Post-release validation
 
 - [ ] Install latest artifact on Linux/Windows/macOS smoke machine
 - [ ] Confirm app launches and reads an EPUB
+- [ ] On desktop app, Settings -> Updates can find/install the new version
 - [ ] Confirm update instructions in README are still accurate
 
 ## 6) User communication
@@ -42,4 +44,3 @@ Use this checklist for every user-facing release.
 - [ ] Share update instructions:
   - Linux: `bash scripts/install-linux.sh`
   - Desktop: download latest installer from Releases
-
