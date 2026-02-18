@@ -283,6 +283,21 @@
 		transition: text-decoration-color var(--transition-fast);
 	}
 
+	/* Footnote/citation markers from EPUB content should render as superscripts,
+	   not full inline links that affect line justification rhythm. */
+	.chapter-body :global(a[epub\:type~="noteref"]),
+	.chapter-body :global(a[role="doc-noteref"]),
+	.chapter-body :global(a.noteref),
+	.chapter-body :global(sup a) {
+		display: inline;
+		font-size: 0.72em;
+		line-height: 0;
+		vertical-align: super;
+		margin-left: 0.03em;
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
 	.chapter-body :global(p a:hover),
 	.chapter-body :global(li a:hover),
 	.chapter-body :global(blockquote a:hover) {

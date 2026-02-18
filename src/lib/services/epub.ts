@@ -73,7 +73,7 @@ function sanitizeHtml(html: string): string {
 	if (typeof window === 'undefined') {
 		return html;
 	}
-	const normalized = normalizeInlineStageDirections(html);
+	const normalized = normalizeInlineTypography(html);
 	return DOMPurify.sanitize(normalized, {
 		ALLOWED_TAGS,
 		ALLOWED_ATTR: [
@@ -92,12 +92,18 @@ function sanitizeHtml(html: string): string {
 	});
 }
 
-function normalizeInlineStageDirections(html: string): string {
+function normalizeInlineTypography(html: string): string {
 	if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
 		return html;
 	}
 
 	const doc = new DOMParser().parseFromString(html, 'text/html');
+	normalizeInlineStageDirections(doc);
+	normalizeInlineWhitespace(doc);
+	return doc.body.innerHTML;
+}
+
+function normalizeInlineStageDirections(doc: Document): void {
 	const candidates = doc.body.querySelectorAll(
 		'[epub\\:type*=\"stage-direction\"], [epub\\:type*=\"stage\"], .stage-direction, .stagedirection'
 	);
@@ -119,8 +125,30 @@ function normalizeInlineStageDirections(html: string): string {
 
 		node.textContent = `(${text})`;
 	});
+}
 
-	return doc.body.innerHTML;
+function normalizeInlineWhitespace(doc: Document): void {
+	const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+	const textNodes: Text[] = [];
+	let current = walker.nextNode();
+	while (current) {
+		textNodes.push(current as Text);
+		current = walker.nextNode();
+	}
+
+	for (const node of textNodes) {
+		const parent = node.parentElement;
+		if (!parent) continue;
+		if (parent.closest('pre, code, kbd, samp, textarea')) continue;
+
+		// Fix cases like "link ." and exaggerated spacing from source indentation.
+		const normalized = node.data
+			.replace(/[\s\u00A0]+([,.;:!?])/g, '$1')
+			.replace(/[\s\u00A0]{2,}/g, ' ');
+		if (normalized !== node.data) {
+			node.data = normalized;
+		}
+	}
 }
 
 type TocMeta = {
