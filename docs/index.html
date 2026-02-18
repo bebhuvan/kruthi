@@ -3,232 +3,143 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kruthi - Quote-first reading companion</title>
+    <title>Kruthi | Read slower. Understand deeper.</title>
     <meta
       name="description"
-      content="Kruthi is a local-first EPUB reader with quote-grounded answers, rich highlights, and a calm reading experience."
+      content="Kruthi is an AI reading companion for EPUBs: citation-grounded chat, local-first privacy, and a refined reading experience built for classics."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;500;600&family=Manrope:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="site.css" />
   </head>
   <body>
+    <div class="ambient ambient-a" aria-hidden="true"></div>
+    <div class="ambient ambient-b" aria-hidden="true"></div>
+
     <header class="site-header">
       <div class="container nav">
-        <a class="logo" href="#">
-          <span class="logo-dot" aria-hidden="true"></span>
-          <span>Kruthi</span>
+        <a class="brand" href="#top" aria-label="Kruthi home">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-text">Kruthi</span>
         </a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="#features">Features</a>
-          <a href="#screens">Screens</a>
-          <a href="#downloads">Downloads</a>
-          <a href="#roadmap">Roadmap</a>
-          <a
-            href="https://github.com/bebhuvan/kruthi"
-            target="_blank"
-            rel="noreferrer"
-            >GitHub</a
-          >
+          <a href="#experience">Experience</a>
+          <a href="#trust">Trust</a>
+          <a href="#downloads">Download</a>
+          <a href="https://github.com/bebhuvan/kruthi" target="_blank" rel="noreferrer">GitHub</a>
         </nav>
       </div>
     </header>
 
-    <main>
-      <section class="hero">
+    <main id="top">
+      <section class="hero section">
         <div class="container hero-grid">
-          <div class="hero-copy reveal" style="--delay: 0s">
-            <p class="eyebrow">A quiet companion for classics</p>
-            <h1>A calm reader for deep, unhurried reading.</h1>
-            <p class="lead">
-              Kruthi is a local-first EPUB reader with quote-grounded answers,
-              luminous typography, and highlights that stay close.
+          <div class="hero-copy reveal" style="--delay: 0.03s">
+            <p class="kicker">AI companion for serious reading</p>
+            <h1>Read slower.<br />Understand deeper.</h1>
+            <p class="hero-lead">
+              Kruthi turns reading into thinking: ask questions, verify claims with citations,
+              and move through difficult books with calm guidance instead of noise.
             </p>
-            <div class="cta">
-              <a class="btn primary" href="#downloads">Download</a>
-              <a
-                class="btn ghost"
-                href="https://github.com/bebhuvan/kruthi"
-                target="_blank"
-                rel="noreferrer"
-                >View on GitHub</a
-              >
+            <div class="hero-cta">
+              <a class="btn btn-primary" href="#downloads">Get Kruthi</a>
+              <a class="btn btn-ghost" href="https://github.com/bebhuvan/kruthi" target="_blank" rel="noreferrer">Explore source</a>
             </div>
-            <div class="meta">
-              <span>Open source</span>
-              <span>Local-first</span>
-              <span>Evidence-led</span>
-            </div>
+            <ul class="signal-list" aria-label="Highlights">
+              <li>Local-first library and notes</li>
+              <li>Citation-aware answers, not generic chat</li>
+              <li>Modern model providers with flexible defaults</li>
+            </ul>
           </div>
-          <div class="hero-visual reveal" style="--delay: 0.1s">
-            <div class="device-stack">
-              <img
-                src="assets/kruthi-home.png"
-                alt="Kruthi home screen"
-                loading="lazy"
-              />
+          <div class="hero-visual reveal" style="--delay: 0.12s">
+            <div class="frame frame-main">
+              <img src="assets/kruthi-book-view.png" alt="Kruthi reader view with highlights and AI panel" loading="lazy" />
             </div>
           </div>
         </div>
       </section>
 
-      <section id="features" class="features">
+      <section id="experience" class="section">
         <div class="container">
           <div class="section-head reveal">
-            <h2>Designed for attention</h2>
+            <p class="kicker">Experience</p>
+            <h2>Designed for attention, not distraction</h2>
             <p>
-              Citations before commentary, a library that stays on device, and a
-              companion that knows when to stay quiet.
+              Every part of Kruthi is tuned for long-form reading: typography, context-first AI,
+              and workflows for highlights, revision, and completion.
             </p>
           </div>
-          <div class="cards">
-            <article class="card reveal" style="--delay: 0.05s">
-              <h3>Evidence first</h3>
-              <p>
-                Answers return to the page with clear citations and honest
-                refusals.
-              </p>
+
+          <div class="feature-grid">
+            <article class="feature-card reveal" style="--delay: 0.04s">
+              <h3>Grounded chat</h3>
+              <p>Responses are tied to source passages with citations and context viewer support.</p>
             </article>
-            <article class="card reveal" style="--delay: 0.12s">
-              <h3>Yours by default</h3>
-              <p>
-                Books, notes, and progress live on your device and work offline.
-              </p>
+            <article class="feature-card reveal" style="--delay: 0.08s">
+              <h3>Reading goals</h3>
+              <p>Set per-book goals, track weekly progress, and estimate chapter completion time.</p>
             </article>
-            <article class="card reveal" style="--delay: 0.18s">
-              <h3>Write from your reading</h3>
-              <p>
-                Capture passages, add notes, and export to Markdown or print.
-              </p>
+            <article class="feature-card reveal" style="--delay: 0.12s">
+              <h3>Answer style controls</h3>
+              <p>Switch between brief, teacher-style, and exam-mode responses with one click simplify.</p>
+            </article>
+            <article class="feature-card reveal" style="--delay: 0.16s">
+              <h3>Curated classics</h3>
+              <p>A shelf system built around serious reading lists and high-quality public-domain editions.</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section id="screens" class="screens">
-        <div class="container">
-          <div class="section-head reveal">
-            <h2>Warm, focused, unhurried</h2>
+      <section class="section showcase">
+        <div class="container showcase-grid">
+          <figure class="frame reveal" style="--delay: 0.05s">
+            <img src="assets/kruthi-home.png" alt="Kruthi library and curated shelves" loading="lazy" />
+            <figcaption>Curated shelves with a clear reading path</figcaption>
+          </figure>
+          <figure class="frame reveal" style="--delay: 0.11s">
+            <img src="assets/kruthi-highlights.png" alt="Kruthi highlights page" loading="lazy" />
+            <figcaption>Highlights and revision in one focused workspace</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="trust" class="section trust">
+        <div class="container trust-wrap reveal">
+          <div class="trust-copy">
+            <p class="kicker">Trust</p>
+            <h2>Private by default. Verifiable by design.</h2>
             <p>
-              A soft surface for the page, with analysis tucked quietly away.
+              Kruthi keeps your books and progress on-device, secures provider keys, and favors
+              citation-backed assistance over speculation.
             </p>
           </div>
-          <div class="screen-grid">
-            <figure class="screen-card reveal" style="--delay: 0.1s">
-              <img
-                src="assets/kruthi-book-view.png"
-                alt="Reading view with highlights"
-                loading="lazy"
-              />
-              <figcaption>Focus view, softly lit</figcaption>
-            </figure>
-            <figure class="screen-card reveal" style="--delay: 0.2s">
-              <img
-                src="assets/kruthi-highlights.png"
-                alt="Highlights list"
-                loading="lazy"
-              />
-              <figcaption>Highlights gathered in one place</figcaption>
-            </figure>
-          </div>
+          <ul class="trust-list">
+            <li>Secure API key handling with migration from legacy plaintext storage</li>
+            <li>Configurable model routing with automatic latest-model resolution</li>
+            <li>Background indexing optimized to keep reading responsive</li>
+          </ul>
         </div>
       </section>
 
-      <section id="downloads" class="downloads">
-        <div class="container">
-          <div class="section-head reveal">
-            <h2>Get Kruthi</h2>
+      <section id="downloads" class="section downloads">
+        <div class="container download-wrap reveal">
+          <div class="section-head compact">
+            <p class="kicker">Download</p>
+            <h2>Install or self-host</h2>
             <p>
-              Direct downloads from GitHub Releases. Lightweight and simple.
+              Desktop binaries and web artifacts are published on every release.
             </p>
           </div>
-          <div class="download-grid">
-            <div class="download-card reveal" style="--delay: 0.05s">
-              <h3>Desktop</h3>
-              <p>macOS (Apple Silicon), Windows, and Linux installers.</p>
-              <div class="download-actions">
-                <a
-                  class="btn small primary"
-                  href="https://github.com/bebhuvan/kruthi/releases/latest/download/Kruthi_0.1.0_aarch64.dmg"
-                  target="_blank"
-                  rel="noreferrer"
-                  >macOS</a
-                >
-                <a
-                  class="btn small ghost"
-                  href="https://github.com/bebhuvan/kruthi/releases/latest/download/Kruthi_0.1.0_x64-setup.exe"
-                  target="_blank"
-                  rel="noreferrer"
-                  >Windows</a
-                >
-                <a
-                  class="btn small ghost"
-                  href="https://github.com/bebhuvan/kruthi/releases/latest/download/Kruthi_0.1.0_amd64.AppImage"
-                  target="_blank"
-                  rel="noreferrer"
-                  >Linux</a
-                >
-              </div>
-              <a
-                class="sub-link"
-                href="https://github.com/bebhuvan/kruthi/releases/latest"
-                target="_blank"
-                rel="noreferrer"
-                >All release assets</a
-              >
-            </div>
-            <div class="download-card reveal" style="--delay: 0.12s">
-              <h3>Web build</h3>
-              <p>Static build for Cloudflare Pages or any host.</p>
-              <a
-                class="btn secondary"
-                href="https://github.com/bebhuvan/kruthi/releases/latest/download/web-cloudflare.tar.gz"
-                target="_blank"
-                rel="noreferrer"
-                >Download build</a
-              >
-            </div>
+          <div class="download-actions">
+            <a class="btn btn-primary" href="https://github.com/bebhuvan/kruthi/releases/latest" target="_blank" rel="noreferrer">Latest release</a>
+            <a class="btn btn-ghost" href="https://github.com/bebhuvan/kruthi/releases/latest/download/web-cloudflare.tar.gz" target="_blank" rel="noreferrer">Web build artifact</a>
           </div>
-        </div>
-      </section>
-
-      <section id="roadmap" class="roadmap">
-        <div class="container">
-          <div class="section-head reveal">
-            <h2>v2, by intention</h2>
-            <p>A few deliberate upgrades, not a rewrite.</p>
-          </div>
-          <div class="roadmap-grid">
-            <article class="roadmap-card reveal" style="--delay: 0.05s">
-              <h3>Reading flow</h3>
-              <p>Typography presets, faster search, calmer navigation.</p>
-            </article>
-            <article class="roadmap-card reveal" style="--delay: 0.12s">
-              <h3>Highlights</h3>
-              <p>Tags, bulk actions, exports for writing workflows.</p>
-            </article>
-            <article class="roadmap-card reveal" style="--delay: 0.18s">
-              <h3>Companion quality</h3>
-              <p>Clear citations, provider presets, smarter caching.</p>
-            </article>
-            <article class="roadmap-card reveal" style="--delay: 0.24s">
-              <h3>Distribution</h3>
-              <p>Auto-updates, steady releases, onboarding guide.</p>
-            </article>
-          </div>
-          <div class="roadmap-link reveal" style="--delay: 0.3s">
-            <a
-              class="btn secondary"
-              href="https://github.com/bebhuvan/kruthi/blob/main/ROADMAP.md"
-              target="_blank"
-              rel="noreferrer"
-              >Read the full roadmap</a
-            >
-          </div>
+          <p class="download-note">Kruthi classics are sourced from public-domain providers, with special thanks to <a href="https://standardebooks.org" target="_blank" rel="noreferrer">Standard Ebooks</a>.</p>
         </div>
       </section>
     </main>
@@ -237,31 +148,12 @@
       <div class="container footer-grid">
         <div>
           <p class="footer-title">Kruthi</p>
-          <p>Open source, made for slow reading.</p>
-          <a
-            class="site-link"
-            href="https://bebhuvan.github.io/kruthi/"
-            target="_blank"
-            rel="noreferrer"
-            >bebhuvan.github.io/kruthi</a
-          >
+          <p class="footer-copy">A refined AI reading companion for people who still read books end to end.</p>
         </div>
         <div class="footer-links">
-          <a href="https://github.com/bebhuvan/kruthi" target="_blank" rel="noreferrer"
-            >GitHub</a
-          >
-          <a
-            href="https://github.com/bebhuvan/kruthi/issues"
-            target="_blank"
-            rel="noreferrer"
-            >Issues</a
-          >
-          <a
-            href="https://github.com/bebhuvan/kruthi/blob/main/README.md"
-            target="_blank"
-            rel="noreferrer"
-            >Docs</a
-          >
+          <a href="https://github.com/bebhuvan/kruthi" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://github.com/bebhuvan/kruthi/issues" target="_blank" rel="noreferrer">Issues</a>
+          <a href="https://github.com/bebhuvan/kruthi/blob/main/README.md" target="_blank" rel="noreferrer">Documentation</a>
         </div>
       </div>
     </footer>
