@@ -77,16 +77,34 @@ npm run build:tauri
 npm run build:capacitor
 ```
 
-## Desktop Downloads
+## Installation
 
-Desktop installers are published on GitHub Releases after a tagged release:
+### Linux (Ubuntu/Debian)
+
+Install latest `.deb` automatically:
+
+```bash
+bash scripts/install-linux.sh
+```
+
+Uninstall + cleanup old AppImage/shortcuts:
+
+```bash
+bash scripts/uninstall-linux.sh
+```
+
+### Desktop downloads (all platforms)
+
+Installers are published on GitHub Releases after a tagged release:
 
 ```bash
 git tag v0.1.0
 git push origin v0.1.0
 ```
 
-Releases: https://github.com/bebhuvan/kruthi/releases
+Releases: https://github.com/bebhuvan/kruthi/releases/latest
+
+Every release includes `SHA256SUMS.txt` for integrity verification.
 
 ## Mobile Releases
 

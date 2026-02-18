@@ -41,6 +41,7 @@ git push origin v0.1.0
 ```
 
 GitHub Actions will build and attach desktop installers to the release.
+It will also generate and upload `SHA256SUMS.txt` automatically.
 
 ## Release (Mobile)
 
