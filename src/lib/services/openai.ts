@@ -15,6 +15,7 @@ interface OpenAiParams {
 	history?: Array<{ role: 'user' | 'assistant'; content: string }>;
 	user: string;
 	onToken?: (delta: string) => void;
+	signal?: AbortSignal;
 }
 
 export async function streamOpenAi(params: OpenAiParams): Promise<string> {
@@ -42,6 +43,6 @@ export async function streamOpenAi(params: OpenAiParams): Promise<string> {
 			}
 		},
 		openAiExtractor,
-		{ onText: params.onToken }
+		{ onText: params.onToken, signal: params.signal }
 	);
 }

@@ -22,8 +22,17 @@ export type ParseOptions = {
 const ALLOWED_TAGS = [
 	'p',
 	'span',
+	'a',
 	'em',
 	'strong',
+	'i',
+	'b',
+	'sup',
+	'sub',
+	'small',
+	'cite',
+	'code',
+	'pre',
 	'h1',
 	'h2',
 	'h3',
@@ -42,7 +51,22 @@ function sanitizeHtml(html: string): string {
 	if (typeof window === 'undefined') {
 		return html;
 	}
-	return DOMPurify.sanitize(html, { ALLOWED_TAGS });
+	return DOMPurify.sanitize(html, {
+		ALLOWED_TAGS,
+		ALLOWED_ATTR: [
+			'href',
+			'id',
+			'class',
+			'title',
+			'type',
+			'role',
+			'aria-label',
+			'aria-describedby',
+			'epub:type'
+		],
+		FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form'],
+		ALLOW_UNKNOWN_PROTOCOLS: false
+	});
 }
 
 type TocMeta = {

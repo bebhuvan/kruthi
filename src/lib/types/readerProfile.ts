@@ -12,10 +12,21 @@ export interface ReaderProfile {
 	wordsLookedUp: number;
 	helpfulResponses: string[];
 	unhelpfulResponses: string[];
+	bookStats: Record<string, BookReadingStats>;
 	updatedAt: number;
 }
 
 export type FeedbackRating = 'helpful' | 'unhelpful';
+
+export interface BookReadingStats {
+	bookId: string;
+	weeklyGoalMinutes: number;
+	weeklyMinutesRead: number;
+	weekStartAt: number;
+	totalMinutesRead: number;
+	completedChapterIds: string[];
+	lastReadAt: number;
+}
 
 export interface ReaderSession {
 	bookId?: string;

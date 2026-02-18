@@ -14,6 +14,7 @@ interface GeminiParams {
 	/** Conversation history for multi-turn chat */
 	history?: Array<{ role: 'user' | 'assistant'; content: string }>;
 	onToken?: (delta: string) => void;
+	signal?: AbortSignal;
 }
 
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
@@ -80,6 +81,6 @@ export async function streamGemini(params: GeminiParams): Promise<string> {
 			body: { contents }
 		},
 		geminiExtractor,
-		{ onText: params.onToken }
+		{ onText: params.onToken, signal: params.signal }
 	);
 }

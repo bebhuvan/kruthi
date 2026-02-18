@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { adapter } from '$lib/platform';
 	import type { Highlight } from '$lib/types/highlight';
+	import { buildHighlightGraph } from '$lib/services/highlightGraph';
 
 	let highlights: Highlight[] = [];
 	let isLoading = false;
@@ -11,6 +12,7 @@
 	let query = '';
 	let editingId: string | null = null;
 	let noteDraft = '';
+	let relatedGraph: Record<string, Array<{ id: string; score: number }>> = {};
 
 	const loadHighlights = async () => {
 		isLoading = true;
@@ -55,6 +57,11 @@
 	const removeHighlight = async (highlight: Highlight) => {
 		await adapter.deleteHighlight(highlight.id);
 		highlights = highlights.filter((item) => item.id !== highlight.id);
+	};
+
+	const jumpToHighlight = (highlightId: string) => {
+		const el = document.getElementById(`highlight-${highlightId}`);
+		el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 	};
 
 	const downloadFile = (content: string, filename: string, type: string) => {
@@ -141,6 +148,7 @@
 		acc[item.bookId].push(item);
 		return acc;
 	}, {});
+	$: relatedGraph = buildHighlightGraph(filteredHighlights, 3, 0.18);
 
 	onMount(() => {
 		void loadHighlights();
@@ -265,7 +273,7 @@
 
 					<div class="highlight-list">
 						{#each group as highlight (highlight.id)}
-							<article class="highlight-card">
+							<article class="highlight-card" id={`highlight-${highlight.id}`}>
 								<div class="highlight-accent"></div>
 								<div class="highlight-content">
 									<div class="highlight-meta">
@@ -287,6 +295,26 @@
 											<div class="note">
 												<span class="note-label">Note</span>
 												<p class="note-text">{highlight.note}</p>
+											</div>
+										{/if}
+										{#if relatedGraph[highlight.id]?.length}
+											<div class="related">
+												<span class="related-label">Related highlights</span>
+												<div class="related-list">
+													{#each relatedGraph[highlight.id] as edge (edge.id)}
+														{@const related = filteredHighlights.find((item) => item.id === edge.id)}
+														{#if related}
+															<button
+																type="button"
+																class="related-chip"
+																on:click={() => jumpToHighlight(related.id)}
+																title={`Similarity ${Math.round(edge.score * 100)}%`}
+															>
+																{related.chapterTitle} · {related.selectedText.slice(0, 70)}…
+															</button>
+														{/if}
+													{/each}
+												</div>
 											</div>
 										{/if}
 										<div class="card-actions">
@@ -768,6 +796,42 @@
 		font-size: var(--text-sm);
 		line-height: 1.6;
 		resize: vertical;
+	}
+
+	.related {
+		margin-bottom: var(--space-4);
+	}
+
+	.related-label {
+		display: block;
+		font-size: 10px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--text-tertiary);
+		margin-bottom: var(--space-2);
+	}
+
+	.related-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+	}
+
+	.related-chip {
+		font-size: 11px;
+		line-height: 1.3;
+		padding: 6px 8px;
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		background: var(--bg-primary);
+		color: var(--text-secondary);
+		max-width: 100%;
+	}
+
+	.related-chip:hover {
+		color: var(--text-primary);
+		background: var(--bg-tertiary);
 	}
 
 	.note-input:focus {

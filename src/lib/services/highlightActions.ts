@@ -11,6 +11,7 @@ import { buildHighlightPrompt } from '$lib/services/prompts';
 import { streamOpenRouter } from '$lib/services/openrouter';
 import { streamOpenAi } from '$lib/services/openai';
 import { streamGemini } from '$lib/services/gemini';
+import { resolveAnthropicModels, resolveOpenRouterModel } from '$lib/services/modelResolver';
 import { streamSSE, anthropicExtractor } from '$lib/utils/sse';
 import { adapter } from '$lib/platform';
 import { SECURE_STORAGE_KEYS } from '$lib/config/constants';
@@ -19,8 +20,6 @@ import { lookupDictionaryDefinition } from '$lib/services/dictionary';
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
 const PROMPT_CACHE_BETA = 'prompt-caching-2024-07-31';
-// Use fast model for quick highlight actions (define/explain)
-const DEFAULT_MODEL = 'claude-haiku-4-5-20251101';
 const DEFAULT_MAX_TOKENS = 512;
 
 interface HighlightParams {
@@ -32,6 +31,7 @@ interface HighlightParams {
 	action: HighlightAction;
 	selection: HighlightSelection;
 	onToken?: (delta: string) => void;
+	signal?: AbortSignal;
 }
 
 export interface HighlightActionResult {
@@ -103,7 +103,8 @@ function parseDefinitionResponse(
 async function streamAnthropicHighlight(
 	apiKey: string,
 	body: Record<string, unknown>,
-	onToken?: (delta: string) => void
+	onToken?: (delta: string) => void,
+	signal?: AbortSignal
 ): Promise<string> {
 	return streamSSE(
 		{
@@ -117,7 +118,7 @@ async function streamAnthropicHighlight(
 			body
 		},
 		anthropicExtractor,
-		{ onText: onToken }
+		{ onText: onToken, signal }
 	);
 }
 
@@ -165,15 +166,18 @@ export async function streamHighlightAction(params: HighlightParams): Promise<Hi
 		adapter.getSecureValue(SECURE_STORAGE_KEYS.openAiApiKey),
 		adapter.getSecureValue(SECURE_STORAGE_KEYS.geminiApiKey)
 	]);
+	const resolvedOpenRouterModel = await resolveOpenRouterModel(params.openRouterModel);
+	const resolvedAnthropicModels = await resolveAnthropicModels(anthropicApiKey ?? '');
 
 	let text = '';
 	if (params.provider === 'openrouter') {
 		text = await streamOpenRouter({
 			apiKey: openRouterApiKey ?? '',
-			model: params.openRouterModel,
+			model: resolvedOpenRouterModel,
 			system: prompt.system,
 			user: promptUser,
-			onToken: params.onToken
+			onToken: params.onToken,
+			signal: params.signal
 		});
 	} else if (params.provider === 'openai') {
 		text = await streamOpenAi({
@@ -181,7 +185,8 @@ export async function streamHighlightAction(params: HighlightParams): Promise<Hi
 			model: params.openAiModel,
 			system: prompt.system,
 			user: promptUser,
-			onToken: params.onToken
+			onToken: params.onToken,
+			signal: params.signal
 		});
 	} else if (params.provider === 'gemini') {
 		text = await streamGemini({
@@ -189,7 +194,8 @@ export async function streamHighlightAction(params: HighlightParams): Promise<Hi
 			model: params.geminiModel,
 			system: prompt.system,
 			user: promptUser,
-			onToken: params.onToken
+			onToken: params.onToken,
+			signal: params.signal
 		});
 	} else {
 		if (!anthropicApiKey?.trim()) {
@@ -198,7 +204,7 @@ export async function streamHighlightAction(params: HighlightParams): Promise<Hi
 		text = await streamAnthropicHighlight(
 			anthropicApiKey,
 			{
-				model: DEFAULT_MODEL,
+				model: resolvedAnthropicModels.fast,
 				max_tokens: DEFAULT_MAX_TOKENS,
 				system: prompt.system,
 				messages: [
@@ -208,7 +214,8 @@ export async function streamHighlightAction(params: HighlightParams): Promise<Hi
 					}
 				]
 			},
-			params.onToken
+			params.onToken,
+			params.signal
 		);
 	}
 

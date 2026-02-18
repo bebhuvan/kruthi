@@ -4,14 +4,21 @@
 
 	export let citation: Citation;
 
-	const dispatch = createEventDispatcher<{ jump: { chapterId?: string; chunkId: string } }>();
+	const dispatch = createEventDispatcher<{
+		jump: { chapterId?: string; chunkId: string };
+		view: { chapterId?: string; chunkId: string };
+	}>();
 
 	const jumpToSource = () => {
 		dispatch('jump', { chapterId: citation.chapterId, chunkId: citation.chunkId });
 	};
+
+	const viewContext = () => {
+		dispatch('view', { chapterId: citation.chapterId, chunkId: citation.chunkId });
+	};
 </script>
 
-<button type="button" class="citation-card" on:click={jumpToSource}>
+<div class="citation-card">
 	<span class="citation-label">Cited passage</span>
 	<p class="citation-quote">"{citation.quote}"</p>
 	<span class="citation-source">
@@ -21,7 +28,11 @@
 			Source #{citation.chunkId}
 		{/if}
 	</span>
-</button>
+	<div class="citation-actions">
+		<button type="button" class="citation-btn" on:click={jumpToSource}>Jump to source</button>
+		<button type="button" class="citation-btn" on:click={viewContext}>View context</button>
+	</div>
+</div>
 
 <style>
 	.citation-card {
@@ -38,6 +49,25 @@
 	.citation-card:hover {
 		border-color: var(--border-hover);
 		background: var(--bg-tertiary);
+	}
+
+	.citation-actions {
+		display: flex;
+		gap: var(--space-2);
+		margin-top: var(--space-3);
+	}
+
+	.citation-btn {
+		font-size: var(--text-xs);
+		padding: 4px 8px;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		color: var(--text-secondary);
+	}
+
+	.citation-btn:hover {
+		color: var(--text-primary);
+		background: var(--bg-primary);
 	}
 
 	.citation-label {

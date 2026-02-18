@@ -42,6 +42,11 @@
 		<div class="header-decoration"></div>
 		<h2 class="shelves-title">Curated Classics</h2>
 		<p class="shelves-subtitle">Timeless literature, beautifully presented</p>
+		<p class="shelves-credit">
+			With gratitude to
+			<a href="https://standardebooks.org" target="_blank" rel="noopener noreferrer">Standard Ebooks</a>
+			for high-quality public-domain editions.
+		</p>
 		<div class="header-decoration"></div>
 	</header>
 
@@ -126,6 +131,18 @@
 		color: var(--text-secondary);
 		margin: 0;
 		font-style: italic;
+	}
+
+	.shelves-credit {
+		margin: 0.6rem 0 0;
+		font-size: 0.9rem;
+		color: var(--text-tertiary);
+	}
+
+	.shelves-credit a {
+		color: var(--text-secondary);
+		text-decoration: underline;
+		text-underline-offset: 2px;
 	}
 
 	.shelf {

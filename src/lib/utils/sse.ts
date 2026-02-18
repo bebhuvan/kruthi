@@ -11,6 +11,8 @@ import { LLMError } from '$lib/types/errors';
 export interface SSEStreamOptions {
 	/** Called for each text delta received */
 	onText?: (delta: string) => void;
+	/** Optional AbortSignal to cancel streaming */
+	signal?: AbortSignal;
 	/** Retry options for the fetch request */
 	retry?: RetryOptions;
 }
@@ -106,6 +108,7 @@ export async function streamSSE(
 		config.url,
 		{
 			method: 'POST',
+			signal: options.signal,
 			headers: {
 				'content-type': 'application/json',
 				...config.headers

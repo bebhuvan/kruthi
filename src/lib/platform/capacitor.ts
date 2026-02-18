@@ -971,16 +971,7 @@ export class CapacitorAdapter implements PlatformAdapter {
 
 	async getSecureValue(key: string): Promise<string | null> {
 		const result = await Preferences.get({ key: `${SECURE_PREFIX}${key}` });
-		if (result.value) {
-			return result.value;
-		}
-		// Fallback: check settings
-		const settings = await this.getSettings();
-		if (settings && key in settings) {
-			const candidate = (settings as unknown as Record<string, unknown>)[key];
-			return typeof candidate === 'string' ? candidate : null;
-		}
-		return null;
+		return result.value ?? null;
 	}
 
 	async setSecureValue(key: string, value: string): Promise<void> {

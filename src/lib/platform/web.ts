@@ -506,15 +506,7 @@ export class WebAdapter implements PlatformAdapter {
 	async getSecureValue(key: string): Promise<string | null> {
 		const secureKey = `${SECURE_STORAGE_PREFIX}:${key}`;
 		const value = readLocalStorage(secureKey);
-		if (value !== null) {
-			return value;
-		}
-		const settings = await this.getSettings();
-		if (settings && key in settings) {
-			const candidate = (settings as unknown as Record<string, unknown>)[key];
-			return typeof candidate === 'string' ? candidate : null;
-		}
-		return null;
+		return value !== null ? value : null;
 	}
 
 	async setSecureValue(key: string, value: string): Promise<void> {

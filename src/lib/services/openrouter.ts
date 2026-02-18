@@ -15,6 +15,7 @@ interface OpenRouterParams {
 	history?: Array<{ role: 'user' | 'assistant'; content: string }>;
 	user: string;
 	onToken?: (delta: string) => void;
+	signal?: AbortSignal;
 }
 
 function getReferer(): string | undefined {
@@ -53,6 +54,6 @@ export async function streamOpenRouter(params: OpenRouterParams): Promise<string
 			}
 		},
 		openAiExtractor,
-		{ onText: params.onToken }
+		{ onText: params.onToken, signal: params.signal }
 	);
 }

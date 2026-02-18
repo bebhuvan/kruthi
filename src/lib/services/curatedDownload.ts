@@ -49,6 +49,15 @@ const CORS_PROXIES = [
 	'https://corsproxy.io/?',
 	'https://api.codetabs.com/v1/proxy?quest='
 ];
+const ENABLE_PROXY_FALLBACK = import.meta.env.VITE_ENABLE_CORS_PROXY_FALLBACK === 'true';
+const ALLOWED_DOWNLOAD_HOSTS = new Set([
+	'standardebooks.org',
+	'www.standardebooks.org',
+	'gutenberg.org',
+	'www.gutenberg.org',
+	'gutenberg.net',
+	'www.gutenberg.net'
+]);
 
 /**
  * Generate a deterministic book ID from the curated book
@@ -92,6 +101,13 @@ function normalizeDownloadUrl(url: string): string {
 	return url;
 }
 
+function assertAllowedDownloadHost(url: string): void {
+	const host = new URL(url).hostname.toLowerCase();
+	if (!ALLOWED_DOWNLOAD_HOSTS.has(host)) {
+		throw new Error(`Blocked download host: ${host}`);
+	}
+}
+
 /**
  * Try fetching with different CORS proxies (web) or direct fetch (native)
  */
@@ -100,6 +116,7 @@ async function fetchWithProxy(url: string, onProgress?: (progress: number) => vo
 
 	// Normalize URL for direct file access
 	const normalizedUrl = normalizeDownloadUrl(url);
+	assertAllowedDownloadHost(normalizedUrl);
 
 	// Native apps don't need CORS proxies
 	if (isNativeEnvironment()) {
@@ -120,7 +137,14 @@ async function fetchWithProxy(url: string, onProgress?: (progress: number) => vo
 		console.log('Direct fetch failed, trying proxies...');
 	}
 
-	// Try each proxy
+	if (!ENABLE_PROXY_FALLBACK) {
+		throw new Error(
+			'Direct download failed (likely CORS). For safety, proxy fallback is disabled by default. ' +
+				'Try desktop/mobile build, manual EPUB upload, or set VITE_ENABLE_CORS_PROXY_FALLBACK=true.'
+		);
+	}
+
+	// Try each proxy (opt-in only)
 	for (const proxy of CORS_PROXIES) {
 		try {
 			const proxyUrl = proxy + encodeURIComponent(normalizedUrl);

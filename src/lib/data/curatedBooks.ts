@@ -39,7 +39,6 @@ export type CollectionId =
 	| 'latin-american'
 	| 'african-diaspora'
 	| 'american'
-	| 'french'
 	| 'russian'
 	| 'poetry'
 	| 'mystery'
@@ -210,12 +209,6 @@ export const collections: Collection[] = [
 		name: 'American Classics',
 		icon: '🗽',
 		description: 'The new world voice'
-	},
-	{
-		id: 'french',
-		name: 'French Literature',
-		icon: '🇫🇷',
-		description: 'Art, revolution, passion'
 	},
 	{
 		id: 'mythology',
@@ -873,7 +866,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1844,
 		hours: 40,
 		hook: 'Revenge, perfectly plotted',
-		collections: ['bucket-list', 'all-time-greats', 'french', 'adventure', 'epic'],
+		collections: ['bucket-list', 'all-time-greats', 'adventure', 'epic'],
 		cover: {
 			letter: 'C',
 			bgColor: '#1a1a2e',
@@ -893,7 +886,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1844,
 		hours: 20,
 		hook: 'All for one, one for all',
-		collections: ['french', 'adventure'],
+		collections: ['adventure'],
 		cover: {
 			letter: '3',
 			bgColor: '#2e1a1a',
@@ -1347,7 +1340,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1903,
 		hours: 20,
 		hook: 'Realism with a razor edge',
-		collections: ['short-stories', 'french'],
+		collections: ['short-stories'],
 		cover: {
 			letter: 'M',
 			bgColor: '#5c4a3d',
@@ -1637,7 +1630,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1021,
 		hours: 35,
 		hook: 'Courtly love and politics in Heian Japan',
-		collections: ['world-classics', 'east-asian', 'epic', 'love-society'],
+		collections: ['bucket-list', 'world-classics', 'east-asian', 'epic', 'love-society'],
 		cover: {
 			letter: 'G',
 			bgColor: '#6b3a5c',
@@ -2051,7 +2044,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: -400,
 		hours: 80,
 		hook: 'The great war, the great questions',
-		collections: ['all-time-greats', 'indian-classics', 'world-classics', 'mythology', 'religion', 'epic', 'philosophy'],
+		collections: ['bucket-list', 'all-time-greats', 'indian-classics', 'world-classics', 'mythology', 'religion', 'epic', 'philosophy'],
 		cover: {
 			letter: 'M',
 			bgColor: '#4a3728',
@@ -2499,7 +2492,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1922,
 		hours: 25,
 		hook: 'One day. All of life.',
-		collections: ['all-time-greats', 'epic'],
+		collections: ['bucket-list', 'all-time-greats', 'epic'],
 		cover: {
 			letter: 'U',
 			bgColor: '#1a3a4a',
@@ -2519,7 +2512,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1925,
 		hours: 6,
 		hook: 'Guilty of what? Everything.',
-		collections: ['all-time-greats', 'gothic', 'political-dystopia', 'philosophy'],
+		collections: ['bucket-list', 'all-time-greats', 'gothic', 'political-dystopia', 'philosophy'],
 		cover: {
 			letter: 'K',
 			bgColor: '#2c2c2c',
@@ -2539,7 +2532,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1857,
 		hours: 10,
 		hook: 'Desire, delusion, the modern novel',
-		collections: ['bucket-list', 'all-time-greats', 'french', 'love-society'],
+		collections: ['bucket-list', 'all-time-greats', 'love-society'],
 		cover: {
 			letter: 'B',
 			bgColor: '#5c4a3d',
@@ -2602,7 +2595,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1759,
 		hours: 3,
 		hook: 'Optimism destroyed, brilliantly',
-		collections: ['all-time-greats', 'french', 'wit-wonder', 'short'],
+		collections: ['all-time-greats', 'wit-wonder', 'short'],
 		cover: {
 			letter: 'C',
 			bgColor: '#c9a227',
@@ -2682,7 +2675,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1601,
 		hours: 4,
 		hook: 'To be or not to be',
-		collections: ['all-time-greats', 'gothic', 'drama', 'short'],
+		collections: ['bucket-list', 'all-time-greats', 'gothic', 'drama', 'short'],
 		cover: {
 			letter: 'H',
 			bgColor: '#1a1a1a',
@@ -2823,7 +2816,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1862,
 		hours: 50,
 		hook: 'Justice, mercy, redemption',
-		collections: ['bucket-list', 'all-time-greats', 'french', 'epic', 'history'],
+		collections: ['bucket-list', 'all-time-greats', 'epic', 'history'],
 		cover: {
 			letter: 'L',
 			bgColor: '#1a1a2e',
@@ -2843,7 +2836,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1831,
 		hours: 15,
 		hook: 'Sanctuary! Sanctuary!',
-		collections: ['french', 'gothic', 'love-society', 'history'],
+		collections: ['gothic', 'love-society', 'history'],
 		cover: {
 			letter: 'N',
 			bgColor: '#3d3225',
@@ -3089,7 +3082,7 @@ export const curatedBooks: CuratedBook[] = [
 		year: 1670,
 		hours: 8,
 		hook: 'The heart has reasons that reason cannot know',
-		collections: ['philosophy', 'religion', 'french'],
+		collections: ['philosophy', 'religion'],
 		cover: {
 			letter: 'P',
 			bgColor: '#3d3225',
@@ -3304,6 +3297,286 @@ export const curatedBooks: CuratedBook[] = [
 			name: 'standard-ebooks',
 			url: 'https://standardebooks.org/ebooks/w-e-b-du-bois/the-souls-of-black-folk',
 			epubUrl: 'https://standardebooks.org/ebooks/w-e-b-du-bois/the-souls-of-black-folk/downloads/w-e-b-du-bois_the-souls-of-black-folk.epub'
+		}
+	},
+	{
+		id: 'age-of-innocence',
+		title: 'The Age of Innocence',
+		author: 'Edith Wharton',
+		year: 1920,
+		hours: 9,
+		hook: 'Love, duty, and old New York society',
+		collections: ['all-time-greats', 'american', 'love-society'],
+		cover: {
+			letter: 'A',
+			bgColor: '#4c2d3a',
+			letterColor: '#f6e8d5',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/edith-wharton/the-age-of-innocence',
+			epubUrl: 'https://standardebooks.org/ebooks/edith-wharton/the-age-of-innocence/downloads/edith-wharton_the-age-of-innocence.epub'
+		}
+	},
+	{
+		id: 'room-with-a-view',
+		title: 'A Room with a View',
+		author: 'E. M. Forster',
+		year: 1908,
+		hours: 6,
+		hook: 'A coming-of-age romance across Florence and England',
+		collections: ['start-here', 'love-society', 'all-time-greats'],
+		cover: {
+			letter: 'R',
+			bgColor: '#355c7d',
+			letterColor: '#f8f1de',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/e-m-forster/a-room-with-a-view',
+			epubUrl: 'https://standardebooks.org/ebooks/e-m-forster/a-room-with-a-view/downloads/e-m-forster_a-room-with-a-view.epub'
+		}
+	},
+	{
+		id: 'my-antonia',
+		title: 'My Antonia',
+		author: 'Willa Cather',
+		year: 1918,
+		hours: 7,
+		hook: 'Immigrant life and memory on the American prairie',
+		collections: ['american', 'all-time-greats', 'world-classics'],
+		cover: {
+			letter: 'M',
+			bgColor: '#6f4e37',
+			letterColor: '#f3e4c8',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/willa-cather/my-antonia',
+			epubUrl: 'https://standardebooks.org/ebooks/willa-cather/my-antonia/downloads/willa-cather_my-antonia.epub'
+		}
+	},
+	{
+		id: 'mrs-dalloway',
+		title: 'Mrs. Dalloway',
+		author: 'Virginia Woolf',
+		year: 1925,
+		hours: 6,
+		hook: 'One day in London, a whole life in memory',
+		collections: ['all-time-greats', 'world-classics'],
+		cover: {
+			letter: 'D',
+			bgColor: '#3a4a63',
+			letterColor: '#f0e6d2',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/virginia-woolf/mrs-dalloway',
+			epubUrl: 'https://standardebooks.org/ebooks/virginia-woolf/mrs-dalloway/downloads/virginia-woolf_mrs-dalloway.epub'
+		}
+	},
+	{
+		id: 'to-the-lighthouse',
+		title: 'To the Lighthouse',
+		author: 'Virginia Woolf',
+		year: 1927,
+		hours: 7,
+		hook: 'Time, family, and the art of seeing',
+		collections: ['all-time-greats', 'world-classics'],
+		cover: {
+			letter: 'L',
+			bgColor: '#1f4e5f',
+			letterColor: '#f5eddc',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/virginia-woolf/to-the-lighthouse',
+			epubUrl: 'https://standardebooks.org/ebooks/virginia-woolf/to-the-lighthouse/downloads/virginia-woolf_to-the-lighthouse.epub'
+		}
+	},
+	{
+		id: 'portrait-of-a-lady',
+		title: 'The Portrait of a Lady',
+		author: 'Henry James',
+		year: 1881,
+		hours: 16,
+		hook: 'Freedom, money, and a costly education',
+		collections: ['all-time-greats', 'love-society'],
+		cover: {
+			letter: 'P',
+			bgColor: '#5c3b2e',
+			letterColor: '#f2e2c9',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/henry-james/the-portrait-of-a-lady',
+			epubUrl: 'https://standardebooks.org/ebooks/henry-james/the-portrait-of-a-lady/downloads/henry-james_the-portrait-of-a-lady.epub'
+		}
+	},
+	{
+		id: 'howards-end',
+		title: 'Howards End',
+		author: 'E. M. Forster',
+		year: 1910,
+		hours: 8,
+		hook: 'Only connect: class, culture, and conscience',
+		collections: ['all-time-greats', 'love-society'],
+		cover: {
+			letter: 'H',
+			bgColor: '#3f5f42',
+			letterColor: '#ece4d0',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/e-m-forster/howards-end',
+			epubUrl: 'https://standardebooks.org/ebooks/e-m-forster/howards-end/downloads/e-m-forster_howards-end.epub'
+		}
+	},
+	{
+		id: 'leviathan',
+		title: 'Leviathan',
+		author: 'Thomas Hobbes',
+		year: 1651,
+		hours: 14,
+		hook: 'Why states exist, and what we owe them',
+		collections: ['philosophy', 'history', 'economics'],
+		cover: {
+			letter: 'L',
+			bgColor: '#2a313f',
+			letterColor: '#d8c89a',
+			style: 'outlined'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/thomas-hobbes/leviathan',
+			epubUrl: 'https://standardebooks.org/ebooks/thomas-hobbes/leviathan/downloads/thomas-hobbes_leviathan.epub'
+		}
+	},
+	{
+		id: 'erewhon',
+		title: 'Erewhon',
+		author: 'Samuel Butler',
+		year: 1872,
+		hours: 8,
+		hook: 'A satirical society where logic runs backwards',
+		collections: ['speculative', 'wit-wonder', 'philosophy'],
+		cover: {
+			letter: 'E',
+			bgColor: '#3b4b5b',
+			letterColor: '#f2e6cf',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/samuel-butler/erewhon',
+			epubUrl: 'https://standardebooks.org/ebooks/samuel-butler/erewhon/downloads/samuel-butler_erewhon.epub'
+		}
+	},
+	{
+		id: 'noli-me-tangere',
+		title: 'Noli Me Tangere',
+		author: 'José Rizal',
+		year: 1887,
+		hours: 18,
+		hook: 'Colonial power, love, and resistance in the Philippines',
+		collections: ['world-classics', 'east-asian', 'political-dystopia', 'history'],
+		cover: {
+			letter: 'N',
+			bgColor: '#5d3a2e',
+			letterColor: '#f4e5c8',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/jose-rizal/noli-me-tangere/charles-e-derbyshire',
+			epubUrl: 'https://standardebooks.org/ebooks/jose-rizal/noli-me-tangere/charles-e-derbyshire/downloads/jose-rizal_noli-me-tangere_charles-e-derbyshire.epub'
+		}
+	},
+	{
+		id: 'el-filibusterismo',
+		title: 'El Filibusterismo',
+		author: 'José Rizal',
+		year: 1891,
+		hours: 16,
+		hook: 'Revolution hardens when reform fails',
+		collections: ['world-classics', 'east-asian', 'political-dystopia', 'history'],
+		cover: {
+			letter: 'F',
+			bgColor: '#3b2a24',
+			letterColor: '#f0dbc2',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/jose-rizal/el-filibusterismo/charles-e-derbyshire',
+			epubUrl: 'https://standardebooks.org/ebooks/jose-rizal/el-filibusterismo/charles-e-derbyshire/downloads/jose-rizal_el-filibusterismo_charles-e-derbyshire.epub'
+		}
+	},
+	{
+		id: 'a-passage-to-india',
+		title: 'A Passage to India',
+		author: 'E. M. Forster',
+		year: 1924,
+		hours: 10,
+		hook: 'Friendship and fracture under empire',
+		collections: ['all-time-greats', 'world-classics', 'history', 'love-society'],
+		cover: {
+			letter: 'I',
+			bgColor: '#4a3a5c',
+			letterColor: '#f2e7d3',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/e-m-forster/a-passage-to-india',
+			epubUrl: 'https://standardebooks.org/ebooks/e-m-forster/a-passage-to-india/downloads/e-m-forster_a-passage-to-india.epub'
+		}
+	},
+	{
+		id: 'secret-agent',
+		title: 'The Secret Agent',
+		author: 'Joseph Conrad',
+		year: 1907,
+		hours: 8,
+		hook: 'Anarchists, spies, and the machinery of terror',
+		collections: ['mystery', 'gothic', 'political-dystopia'],
+		cover: {
+			letter: 'S',
+			bgColor: '#242a30',
+			letterColor: '#d5c49d',
+			style: 'outlined'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/joseph-conrad/the-secret-agent',
+			epubUrl: 'https://standardebooks.org/ebooks/joseph-conrad/the-secret-agent/downloads/joseph-conrad_the-secret-agent.epub'
+		}
+	},
+	{
+		id: 'germinal',
+		title: 'Germinal',
+		author: 'Émile Zola',
+		year: 1885,
+		hours: 16,
+		hook: 'A mining town pushed to the edge of revolt',
+		collections: ['all-time-greats', 'history', 'economics', 'political-dystopia'],
+		cover: {
+			letter: 'G',
+			bgColor: '#2e2c29',
+			letterColor: '#e8d9bc',
+			style: 'filled'
+		},
+		source: {
+			name: 'standard-ebooks',
+			url: 'https://standardebooks.org/ebooks/emile-zola/germinal/havelock-ellis',
+			epubUrl: 'https://standardebooks.org/ebooks/emile-zola/germinal/havelock-ellis/downloads/emile-zola_germinal_havelock-ellis.epub'
 		}
 	}
 ];

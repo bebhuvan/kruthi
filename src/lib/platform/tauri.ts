@@ -928,15 +928,7 @@ export class TauriAdapter implements PlatformAdapter {
 	async getSecureValue(key: string): Promise<string | null> {
 		const { secure } = await this.ensureStores();
 		const stored = await secure.get<string>(key);
-		if (typeof stored === 'string') {
-			return stored;
-		}
-		const settings = await this.getSettings();
-		if (settings && key in settings) {
-			const candidate = (settings as unknown as Record<string, unknown>)[key];
-			return typeof candidate === 'string' ? candidate : null;
-		}
-		return null;
+		return typeof stored === 'string' ? stored : null;
 	}
 
 	async setSecureValue(key: string, value: string): Promise<void> {

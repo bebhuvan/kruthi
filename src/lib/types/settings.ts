@@ -29,6 +29,7 @@ export interface Settings {
 	textAlign: TextAlign;
 	focusMode: boolean;
 	showReadingProgress: boolean;
+	indexOnlyWhenIdle: boolean;
 	highlightColor: HighlightColor;
 	llmProvider: LLMProvider;
 	anthropicApiKey: string;

@@ -25,6 +25,7 @@ const DEFAULT_OVERLAP_TOKENS = 100;
 const DEFAULT_TOP_K = 12;
 const DEFAULT_EMBEDDING_BATCH = 8;
 const DEFAULT_CHUNK_MESSAGE_SIZE = 50;
+const DEFAULT_CHUNK_SAVE_BATCH = 24;
 const EMBEDDING_MODEL = 'Xenova/all-MiniLM-L6-v2';
 const DEFAULT_RRF_K = 60;
 
@@ -553,6 +554,52 @@ async function buildChunks(book: Book, options: Required<ChunkingOptions>): Prom
 	return chunks;
 }
 
+async function saveChunkBuffer(bookId: string, buffer: Chunk[]): Promise<void> {
+	if (buffer.length === 0) {
+		return;
+	}
+	await adapter.saveChunks(bookId, buffer);
+	buffer.length = 0;
+}
+
+async function buildAndSaveChunksIncremental(
+	book: Book,
+	options: Required<ChunkingOptions>,
+	saveBatchSize: number = DEFAULT_CHUNK_SAVE_BATCH
+): Promise<number> {
+	let chunkIndex = 0;
+	const buffer: Chunk[] = [];
+
+	for (let i = 0; i < book.chapters.length; i += 1) {
+		const chapter = book.chapters[i];
+		const rawChunks = chunkChapter(chapter, options);
+		for (const rawChunk of rawChunks) {
+			buffer.push({
+				id: buildChunkId(book.id, chapter.id, chunkIndex++),
+				bookId: book.id,
+				chapterId: chapter.id,
+				chapterTitle: chapter.title,
+				bookChapter: `${book.id}:${chapter.id}`,
+				text: rawChunk.text,
+				offsetStart: rawChunk.offsetStart,
+				offsetEnd: rawChunk.offsetEnd
+			});
+
+			if (buffer.length >= saveBatchSize) {
+				await saveChunkBuffer(book.id, buffer);
+				await yieldToMainThread('background');
+			}
+		}
+
+		const progress = Math.round(((i + 1) / book.chapters.length) * 100);
+		indexingStore.setStage('chunking', progress);
+		await yieldToMainThread('background');
+	}
+
+	await saveChunkBuffer(book.id, buffer);
+	return chunkIndex;
+}
+
 // Cached worker instance
 let indexingWorker: Worker | null = null;
 let workerSupported: boolean | null = null;
@@ -731,15 +778,14 @@ export async function indexBook(book: Book, options: IndexOptions = {}): Promise
 		return;
 	}
 
-	const chunks = await buildChunks(book, resolvedChunking);
+	const chunkCount = await buildAndSaveChunksIncremental(book, resolvedChunking);
 
-	if (chunks.length === 0) {
+	if (chunkCount === 0) {
 		indexingStore.finishIndexing();
 		throw new RetrievalError('No chunks generated for book.', book.id);
 	}
 
 	indexingStore.setStage('chunking', 100);
-	await saveChunks(chunks);
 
 	// Chunking complete - finish the "blocking" part
 	indexingStore.finishIndexing();

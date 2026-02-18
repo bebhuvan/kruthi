@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store';
 import type { Book } from '$lib/types/book';
-import type { ChatMessage, ChatState } from '$lib/types/chat';
+import type { AnswerStyle, ChatMessage, ChatState } from '$lib/types/chat';
 import type { SearchScope } from '$lib/types/retrieval';
 import type { FeedbackRating } from '$lib/types/readerProfile';
 import { streamAnswer } from '$lib/services/llm';
@@ -20,6 +20,7 @@ const initialState: ChatState = {
 	isOpen: false,
 	scope: 'current_chapter',
 	mode: 'grounded',
+	answerStyle: 'balanced',
 	messages: [],
 	maxHistoryTokens: 8000,
 	isStreaming: false,
@@ -70,19 +71,29 @@ function createChatStore() {
 		toggle: () => update((state) => ({ ...state, isOpen: !state.isOpen })),
 		setScope: (scope: SearchScope) => update((state) => ({ ...state, scope })),
 		setMode: (mode: ChatState['mode']) => update((state) => ({ ...state, mode })),
+		setAnswerStyle: (answerStyle: AnswerStyle) => update((state) => ({ ...state, answerStyle })),
 		clearError: () => update((state) => ({ ...state, error: null })),
-		reset: () => {
-			cancelActiveRequest();
-			set({
-				...initialState,
-				isOpen: getState().isOpen,
-				mode: getState().mode
-			});
-		},
+			reset: () => {
+				cancelActiveRequest();
+				set({
+					...initialState,
+					isOpen: getState().isOpen,
+					mode: getState().mode,
+					answerStyle: getState().answerStyle
+				});
+			},
 		/** Cancel any in-flight request */
 		cancel: () => {
 			cancelActiveRequest();
-			update((state) => ({ ...state, isStreaming: false }));
+			update((state) => ({
+				...state,
+				isStreaming: false,
+				messages: state.messages.map((message) =>
+					message.role === 'assistant' && message.isStreaming
+						? { ...message, isStreaming: false }
+						: message
+				)
+			}));
 		},
 		recordFeedback: (messageId: string, rating: FeedbackRating) => {
 			update((state) => ({
@@ -137,6 +148,7 @@ function createChatStore() {
 
 			const requestId = crypto.randomUUID();
 			activeRequestId = requestId;
+			activeAbortController = new AbortController();
 
 			const userMessage: ChatMessage = {
 				id: crypto.randomUUID(),
@@ -171,11 +183,13 @@ function createChatStore() {
 					readerProfile: profileState.profile,
 					book: params.book,
 					question: params.question,
-					scope: stateSnapshot.scope,
-					mode: stateSnapshot.mode,
-					chapterId: params.chapterId,
+						scope: stateSnapshot.scope,
+						mode: stateSnapshot.mode,
+						answerStyle: stateSnapshot.answerStyle,
+						chapterId: params.chapterId,
 					conversationHistory: stateSnapshot.messages,
 					maxHistoryTokens: stateSnapshot.maxHistoryTokens,
+					signal: activeAbortController.signal,
 					onToken: (delta) => {
 						if (activeRequestId !== requestId) {
 							return;
@@ -194,6 +208,7 @@ function createChatStore() {
 				if (activeRequestId !== requestId) {
 					return;
 				}
+				activeAbortController = null;
 
 				updateMessage(assistantMessage.id, {
 					content: response.text,
@@ -202,11 +217,16 @@ function createChatStore() {
 					isStreaming: false
 				});
 				update((state) => ({ ...state, isStreaming: false }));
-			} catch (error) {
-				if (activeRequestId !== requestId) {
-					return;
-				}
-				const message = error instanceof Error ? error.message : 'Failed to reach the AI provider.';
+				} catch (error) {
+					if (activeRequestId !== requestId) {
+						return;
+					}
+					activeAbortController = null;
+					if (error instanceof DOMException && error.name === 'AbortError') {
+						update((state) => ({ ...state, isStreaming: false }));
+						return;
+					}
+					const message = error instanceof Error ? error.message : 'Failed to reach the AI provider.';
 				updateMessage(assistantMessage.id, {
 					content: message,
 					isStreaming: false

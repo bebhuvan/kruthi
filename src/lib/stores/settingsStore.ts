@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 import { DEFAULT_SETTINGS, DEFAULT_SYSTEM_PROMPT, FONT_FAMILIES, HIGHLIGHT_COLORS, SECURE_STORAGE_KEYS } from '$lib/config/constants';
 import type { FontFamily, HighlightColor, Settings, TextAlign, Theme } from '$lib/types/settings';
 import { adapter } from '$lib/platform';
+import { extractSensitiveSettings, stripSensitiveSettings } from '$lib/services/settingsSecurity';
 
 function normalizeSettings(parsed: Partial<Settings> | null | undefined): Settings {
 	const source = parsed ?? {};
@@ -18,6 +19,7 @@ function normalizeSettings(parsed: Partial<Settings> | null | undefined): Settin
 		textAlign: source.textAlign ?? DEFAULT_SETTINGS.textAlign,
 		focusMode: source.focusMode ?? DEFAULT_SETTINGS.focusMode,
 		showReadingProgress: source.showReadingProgress ?? DEFAULT_SETTINGS.showReadingProgress,
+		indexOnlyWhenIdle: source.indexOnlyWhenIdle ?? DEFAULT_SETTINGS.indexOnlyWhenIdle,
 		highlightColor: source.highlightColor ?? DEFAULT_SETTINGS.highlightColor,
 		llmProvider: source.llmProvider ?? DEFAULT_SETTINGS.llmProvider,
 		anthropicApiKey: source.anthropicApiKey ?? DEFAULT_SETTINGS.anthropicApiKey,
@@ -79,7 +81,7 @@ function applySettings(settings: Settings): void {
 }
 
 function persistSettings(settings: Settings): void {
-	void adapter.saveSettings(settings);
+	void adapter.saveSettings(stripSensitiveSettings(settings));
 }
 
 const initial = DEFAULT_SETTINGS;
@@ -90,6 +92,7 @@ function createSettingsStore() {
 
 	const hydrate = async () => {
 		const stored = await adapter.getSettings();
+		const legacySensitive = extractSensitiveSettings(stored);
 		const [anthropicApiKey, openRouterApiKey, openAiApiKey, geminiApiKey] = await Promise.all([
 			adapter.getSecureValue(SECURE_STORAGE_KEYS.anthropicApiKey),
 			adapter.getSecureValue(SECURE_STORAGE_KEYS.openRouterApiKey),
@@ -100,30 +103,36 @@ function createSettingsStore() {
 		let next = normalizeSettings(stored);
 		if (anthropicApiKey) {
 			next = { ...next, anthropicApiKey };
-		} else if (stored?.anthropicApiKey) {
-			await adapter.setSecureValue(SECURE_STORAGE_KEYS.anthropicApiKey, stored.anthropicApiKey);
+		} else if (legacySensitive.anthropicApiKey) {
+			await adapter.setSecureValue(SECURE_STORAGE_KEYS.anthropicApiKey, legacySensitive.anthropicApiKey);
+			next = { ...next, anthropicApiKey: legacySensitive.anthropicApiKey };
 		}
 
 		if (openRouterApiKey) {
 			next = { ...next, openRouterApiKey };
-		} else if (stored?.openRouterApiKey) {
-			await adapter.setSecureValue(SECURE_STORAGE_KEYS.openRouterApiKey, stored.openRouterApiKey);
+		} else if (legacySensitive.openRouterApiKey) {
+			await adapter.setSecureValue(SECURE_STORAGE_KEYS.openRouterApiKey, legacySensitive.openRouterApiKey);
+			next = { ...next, openRouterApiKey: legacySensitive.openRouterApiKey };
 		}
 
 		if (openAiApiKey) {
 			next = { ...next, openAiApiKey };
-		} else if (stored?.openAiApiKey) {
-			await adapter.setSecureValue(SECURE_STORAGE_KEYS.openAiApiKey, stored.openAiApiKey);
+		} else if (legacySensitive.openAiApiKey) {
+			await adapter.setSecureValue(SECURE_STORAGE_KEYS.openAiApiKey, legacySensitive.openAiApiKey);
+			next = { ...next, openAiApiKey: legacySensitive.openAiApiKey };
 		}
 
 		if (geminiApiKey) {
 			next = { ...next, geminiApiKey };
-		} else if (stored?.geminiApiKey) {
-			await adapter.setSecureValue(SECURE_STORAGE_KEYS.geminiApiKey, stored.geminiApiKey);
+		} else if (legacySensitive.geminiApiKey) {
+			await adapter.setSecureValue(SECURE_STORAGE_KEYS.geminiApiKey, legacySensitive.geminiApiKey);
+			next = { ...next, geminiApiKey: legacySensitive.geminiApiKey };
 		}
 
 		applySettings(next);
 		set(next);
+		// One-time scrub: remove plaintext keys from persisted settings payload.
+		persistSettings(next);
 	};
 
 	void hydrate();
@@ -229,6 +238,13 @@ function createSettingsStore() {
 		setShowReadingProgress: (showReadingProgress: boolean) =>
 			update((settings) => {
 				const next = { ...settings, showReadingProgress };
+				persistSettings(next);
+				return next;
+			}),
+
+		setIndexOnlyWhenIdle: (indexOnlyWhenIdle: boolean) =>
+			update((settings) => {
+				const next = { ...settings, indexOnlyWhenIdle };
 				persistSettings(next);
 				return next;
 			}),

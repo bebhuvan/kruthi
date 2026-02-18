@@ -2,12 +2,15 @@
 	import { afterUpdate, createEventDispatcher } from 'svelte';
 	import type { Book } from '$lib/types/book';
 	import type { ProactiveSuggestion } from '$lib/types/readerProfile';
+	import type { AnswerStyle } from '$lib/types/chat';
 	import { chatStore } from '$lib/stores/chatStore';
 	import { readerProfileStore } from '$lib/stores/readerProfileStore';
 	import { settingsStore } from '$lib/stores/settingsStore';
 	import { indexingStore } from '$lib/stores/indexingStore';
 	import { getProactiveSuggestions } from '$lib/services/personalization';
+	import { getCitationContext, type CitationContext } from '$lib/services/citations';
 	import ChatMessage from '$lib/components/ai/ChatMessage.svelte';
+	import CitationViewer from '$lib/components/ai/CitationViewer.svelte';
 	import ScopeToggle from '$lib/components/ai/ScopeToggle.svelte';
 	import ModeToggle from '$lib/components/ai/ModeToggle.svelte';
 
@@ -17,6 +20,10 @@
 	let question = '';
 	let scrollEl: HTMLElement | null = null;
 	let proactiveSuggestions: ProactiveSuggestion[] = [];
+	let citationViewerOpen = false;
+	let citationViewerLoading = false;
+	let citationViewerError = '';
+	let citationContext: CitationContext | null = null;
 
 	const dispatch = createEventDispatcher<{ jump: { chapterId?: string; chunkId: string } }>();
 
@@ -47,6 +54,39 @@
 
 	const handleFeedback = (event: CustomEvent<{ messageId: string; rating: 'helpful' | 'unhelpful' }>) => {
 		chatStore.recordFeedback(event.detail.messageId, event.detail.rating);
+	};
+
+	const handleSimplify = async (event: CustomEvent<{ messageId: string; content: string }>) => {
+		const source = event.detail.content.trim();
+		if (!source) return;
+		const prompt = `Simplify your previous answer in plain language.\n\nRequirements:\n- 5 concise bullet points\n- keep all key ideas\n- define hard words simply\n- no loss of nuance\n\nAnswer to simplify:\n${source}`;
+		const chapter = book.chapters[currentChapterIndex];
+		await chatStore.sendQuestion({
+			book,
+			question: prompt,
+			chapterId: chapter?.id
+		});
+	};
+
+	const handleViewCitation = async (event: CustomEvent<{ chapterId?: string; chunkId: string }>) => {
+		citationViewerOpen = true;
+		citationViewerLoading = true;
+		citationViewerError = '';
+		citationContext = null;
+		try {
+			citationContext = await getCitationContext(event.detail.chunkId);
+			if (!citationContext) {
+				citationViewerError = 'Unable to load citation context.';
+			}
+		} catch (error) {
+			citationViewerError = error instanceof Error ? error.message : 'Unable to load citation context.';
+		} finally {
+			citationViewerLoading = false;
+		}
+	};
+
+	const closeCitationViewer = () => {
+		citationViewerOpen = false;
 	};
 
 	const applySuggestion = (suggestion: ProactiveSuggestion) => {
@@ -98,6 +138,19 @@
 	<div class="chat-options">
 		<ScopeToggle scope={$chatStore.scope} on:change={(event) => chatStore.setScope(event.detail.scope)} />
 		<ModeToggle mode={$chatStore.mode} on:change={(event) => chatStore.setMode(event.detail.mode)} />
+		<div class="style-row">
+			<span class="style-label">Answer style</span>
+				<select
+					class="style-select"
+					value={$chatStore.answerStyle}
+					on:change={(event) => chatStore.setAnswerStyle(event.currentTarget.value as AnswerStyle)}
+				>
+				<option value="balanced">Balanced</option>
+				<option value="brief">Brief</option>
+				<option value="teacher">Teacher</option>
+				<option value="exam">Exam Prep</option>
+			</select>
+		</div>
 		{#if $settingsStore.llmProvider === 'openrouter' && !$settingsStore.openRouterApiKey}
 			<p class="api-hint">Add your OpenRouter API key in Settings to start asking questions.</p>
 		{:else if $settingsStore.llmProvider === 'anthropic' && !$settingsStore.anthropicApiKey}
@@ -134,7 +187,13 @@
 		{:else}
 			<div class="messages-list">
 				{#each $chatStore.messages as message (message.id)}
-					<ChatMessage {message} on:jump={handleJump} on:feedback={handleFeedback} />
+					<ChatMessage
+						{message}
+						on:jump={handleJump}
+						on:viewCitation={handleViewCitation}
+						on:feedback={handleFeedback}
+						on:simplify={handleSimplify}
+					/>
 				{/each}
 			</div>
 		{/if}
@@ -164,6 +223,14 @@
 		</div>
 	</footer>
 </aside>
+
+<CitationViewer
+	open={citationViewerOpen}
+	context={citationContext}
+	loading={citationViewerLoading}
+	error={citationViewerError}
+	onClose={closeCitationViewer}
+/>
 
 <style>
 	.chat-backdrop {
@@ -250,6 +317,27 @@
 		gap: var(--space-3);
 		padding: var(--space-3) var(--space-5);
 		border-bottom: 1px solid var(--border);
+	}
+
+	.style-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-2);
+	}
+
+	.style-label {
+		font-size: var(--text-xs);
+		color: var(--text-tertiary);
+	}
+
+	.style-select {
+		font-size: var(--text-xs);
+		border: 1px solid var(--border);
+		background: var(--bg-primary);
+		color: var(--text-primary);
+		border-radius: var(--radius-sm);
+		padding: 4px 8px;
 	}
 
 	.api-hint {

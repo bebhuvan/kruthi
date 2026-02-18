@@ -20,6 +20,7 @@
 	} from '$lib/services/highlights';
 	import { streamHighlightAction } from '$lib/services/highlightActions';
 	import { addVocabularyEntry } from '$lib/services/vocabulary';
+	import { estimateTokenCount } from '$lib/utils/tokenizer';
 	import { adapter } from '$lib/platform';
 	import { chatStore } from '$lib/stores/chatStore';
 	import { readerProfileStore } from '$lib/stores/readerProfileStore';
@@ -85,6 +86,7 @@
 	let toast = { open: false, message: '' };
 	let scrollProgress = 0;
 	let lastProfileChapterId: string | null = null;
+	let chapterEstimateMinutes: number[] = [];
 
 	const INITIAL_RENDER_COUNT = 3;
 	const RENDER_BATCH_SIZE = 2;
@@ -202,6 +204,16 @@
 
 	$: totalChapters = book.chapters.length;
 	$: currentChapterTitle = book.chapters[currentChapter]?.title || '';
+	$: chapterEstimateMinutes = book.chapters.map((chapter) => {
+		const plain = chapter.html.replace(/<[^>]+>/g, ' ');
+		return Math.max(1, Math.ceil(estimateTokenCount(plain) / 220));
+	});
+	$: currentChapterEstimate = chapterEstimateMinutes[currentChapter] ?? 1;
+	$: remainingEstimate = chapterEstimateMinutes.slice(currentChapter).reduce((sum, value) => sum + value, 0);
+	$: currentBookStats = $readerProfileStore.profile.bookStats[book.id];
+	$: weeklyGoalMinutes = currentBookStats?.weeklyGoalMinutes ?? 120;
+	$: weeklyReadMinutes = Math.round(currentBookStats?.weeklyMinutesRead ?? 0);
+	$: goalProgressPct = Math.min(100, Math.round((weeklyReadMinutes / Math.max(1, weeklyGoalMinutes)) * 100));
 	$: showProgress = $settingsStore.showReadingProgress;
 	$: if (renderedChapterCount === 0 && totalChapters > 0) {
 		renderedChapterCount = Math.min(totalChapters, INITIAL_RENDER_COUNT);
@@ -209,10 +221,21 @@
 	$: {
 		const chapter = book.chapters[currentChapter];
 		if (chapter && chapter.id !== lastProfileChapterId) {
+			if (lastProfileChapterId && lastProfileChapterId !== chapter.id) {
+				readerProfileStore.markChapterCompleted(book.id, lastProfileChapterId);
+			}
 			lastProfileChapterId = chapter.id;
 			readerProfileStore.startChapterSession(book.id, chapter.id, chapter.title);
 		}
 	}
+
+	const setWeeklyGoal = () => {
+		const input = window.prompt('Weekly reading goal (minutes)', String(weeklyGoalMinutes));
+		if (!input) return;
+		const parsed = Number(input);
+		if (!Number.isFinite(parsed)) return;
+		readerProfileStore.setBookWeeklyGoal(book.id, parsed);
+	};
 
 	const delayRenderBatch = () => new Promise((resolve) => setTimeout(resolve, RENDER_BATCH_DELAY_MS));
 
@@ -297,7 +320,7 @@
 		if (scrollTimeout) window.clearTimeout(scrollTimeout);
 		scrollTimeout = window.setTimeout(() => {
 			void adapter.savePosition(book.id, currentChapter, window.scrollY);
-			readerProfileStore.recordReadingProgress();
+			readerProfileStore.recordReadingProgress(book.id);
 		}, 500);
 	};
 
@@ -1071,6 +1094,12 @@
 
 		<div class="header-center">
 			<span class="chapter-indicator">{currentChapterTitle}</span>
+			<span class="chapter-meta">
+				~{currentChapterEstimate} min chapter · {remainingEstimate} min left · goal {weeklyReadMinutes}/{weeklyGoalMinutes} min
+			</span>
+			<div class="goal-track" aria-label="Weekly reading goal progress">
+				<div class="goal-fill" style="width: {goalProgressPct}%"></div>
+			</div>
 		</div>
 
 		<div class="header-actions">
@@ -1127,6 +1156,14 @@
 					Recap
 				</button>
 			{/if}
+			<button
+				type="button"
+				class="header-btn"
+				on:click={setWeeklyGoal}
+				aria-label="Set weekly reading goal"
+			>
+				Goal
+			</button>
 			<button
 				type="button"
 				class="header-btn"
@@ -1398,6 +1435,34 @@
 		letter-spacing: 0.01em;
 	}
 
+	.chapter-meta {
+		display: block;
+		margin-top: 2px;
+		font-size: 11px;
+		color: var(--text-tertiary);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 420px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.goal-track {
+		width: min(360px, 80%);
+		height: 4px;
+		margin: 6px auto 0;
+		background: var(--bg-tertiary);
+		border-radius: 999px;
+		overflow: hidden;
+	}
+
+	.goal-fill {
+		height: 100%;
+		background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+		transition: width 180ms ease-out;
+	}
+
 	.header-actions {
 		display: flex;
 		align-items: center;
@@ -1618,6 +1683,16 @@
 		.chapter-indicator {
 			max-width: 140px;
 			font-size: var(--text-xs);
+		}
+
+		.chapter-meta {
+			display: none;
+		}
+
+		.goal-track {
+			width: 120px;
+			height: 3px;
+			margin-top: 4px;
 		}
 
 		.header-btn {

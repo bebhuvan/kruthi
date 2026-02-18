@@ -1,21 +1,43 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import { marked } from 'marked';
+	import DOMPurify from 'dompurify';
 	import type { ChatMessage } from '$lib/types/chat';
 	import Citation from '$lib/components/ai/Citation.svelte';
 
 	export let message: ChatMessage;
 	const dispatch = createEventDispatcher<{
 		jump: { chapterId?: string; chunkId: string };
+		viewCitation: { chapterId?: string; chunkId: string };
 		feedback: { messageId: string; rating: 'helpful' | 'unhelpful' };
+		simplify: { messageId: string; content: string };
 	}>();
 
 	const handleJump = (event: CustomEvent<{ chapterId?: string; chunkId: string }>) => {
 		dispatch('jump', event.detail);
 	};
 
+	const handleViewCitation = (event: CustomEvent<{ chapterId?: string; chunkId: string }>) => {
+		dispatch('viewCitation', event.detail);
+	};
+
 	const sendFeedback = (rating: 'helpful' | 'unhelpful') => {
 		dispatch('feedback', { messageId: message.id, rating });
 	};
+
+	const simplifyAnswer = () => {
+		dispatch('simplify', { messageId: message.id, content: message.content });
+	};
+
+	marked.setOptions({
+		breaks: true,
+		gfm: true
+	});
+
+	$: renderedContent =
+		message.role === 'assistant'
+			? DOMPurify.sanitize(marked.parse(message.content) as string)
+			: '';
 </script>
 
 <div class="message-container">
@@ -23,19 +45,30 @@
 		{#if message.notFound}
 			<p class="not-found">Not found in this book.</p>
 		{/if}
-		<p class="message-content">{message.content}</p>
+		{#if message.role === 'assistant'}
+			<div class="message-content prose">{@html renderedContent}</div>
+		{:else}
+			<p class="message-content">{message.content}</p>
+		{/if}
 	</div>
 
 	{#if message.citations && message.citations.length > 0}
 		<div class="citations">
 			{#each message.citations as citation (citation.chunkId)}
-				<Citation {citation} on:jump={handleJump} />
+				<Citation {citation} on:jump={handleJump} on:view={handleViewCitation} />
 			{/each}
 		</div>
 	{/if}
 
 	{#if message.role === 'assistant' && !message.isStreaming}
 		<div class="feedback-row">
+			<button
+				type="button"
+				class="feedback-btn"
+				on:click={simplifyAnswer}
+			>
+				Simplify
+			</button>
 			<button
 				type="button"
 				class="feedback-btn"
@@ -92,6 +125,47 @@
 
 	.message-content {
 		white-space: pre-wrap;
+	}
+
+	.prose {
+		white-space: normal;
+	}
+
+	.prose :global(p) {
+		margin-bottom: 0.6em;
+	}
+
+	.prose :global(p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.prose :global(ul),
+	.prose :global(ol) {
+		margin: 0.5em 0;
+		padding-left: 1.2em;
+	}
+
+	.prose :global(li) {
+		margin-bottom: 0.2em;
+	}
+
+	.prose :global(strong) {
+		font-weight: 600;
+	}
+
+	.prose :global(code) {
+		font-family: 'SF Mono', Menlo, monospace;
+		font-size: 0.9em;
+		background: var(--bg-tertiary);
+		padding: 0.1em 0.35em;
+		border-radius: 4px;
+	}
+
+	.prose :global(blockquote) {
+		margin: 0.6em 0;
+		padding-left: 0.7em;
+		border-left: 2px solid var(--border);
+		color: var(--text-secondary);
 	}
 
 	.citations {

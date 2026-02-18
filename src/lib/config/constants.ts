@@ -55,6 +55,7 @@ export const READING_WIDTH_DEFAULT = 38;
 export const PAPER_TEXTURE_DEFAULT = true;
 export const SWIPE_NAVIGATION_DEFAULT = true;
 export const SHOW_READING_PROGRESS_DEFAULT = true;
+export const INDEX_ONLY_WHEN_IDLE_DEFAULT = true;
 export const DEFAULT_HIGHLIGHT_COLOR: HighlightColor = 'yellow';
 
 // Softer, non-distracting highlight colors (like Kindle)
@@ -100,13 +101,14 @@ export const DEFAULT_THEME: Theme = 'light';
 export const DEFAULT_FONT_FAMILY: FontFamily = 'literata';
 export const DEFAULT_TEXT_ALIGN: TextAlign = 'left';
 export const DEFAULT_LLM_PROVIDER: LLMProvider = 'anthropic';
-export const DEFAULT_OPENROUTER_MODEL = 'anthropic/claude-sonnet-4.5';
-export const DEFAULT_OPENAI_MODEL = 'gpt-5.2';
+export const DEFAULT_OPENROUTER_MODEL = 'auto';
+export const DEFAULT_OPENAI_MODEL = 'gpt-5';
 export const DEFAULT_GEMINI_MODEL = 'gemini-3-flash-preview';
 
 // OpenAI model options
 export const OPENAI_MODELS = [
-	{ value: 'gpt-5.2', label: 'GPT-5.2 (latest flagship)' },
+	{ value: 'gpt-5', label: 'GPT-5 (latest flagship)' },
+	{ value: 'gpt-5.2', label: 'GPT-5.2 (newer snapshot)' },
 	{ value: 'gpt-5-mini', label: 'GPT-5 Mini (fast & affordable)' },
 	{ value: 'gpt-4.1', label: 'GPT-4.1 (stable)' },
 	{ value: 'gpt-4o-mini', label: 'GPT-4o Mini (budget)' }
@@ -132,7 +134,11 @@ For definitions: Give a clear, contextual meaning — how the word is used here,
 
 For explanations: Connect ideas to the broader themes of the work when relevant.`;
 export const OPENROUTER_MODELS = [
+	{ value: 'auto', label: 'Auto (latest Claude/Kimi)' },
 	{ value: 'anthropic/claude-sonnet-4.5', label: 'Claude Sonnet 4.5 (frontier)' },
+	{ value: 'anthropic/claude-sonnet-4.6', label: 'Claude Sonnet 4.6 (latest)' },
+	{ value: 'moonshotai/kimi-k2.5', label: 'Kimi K2.5 (latest)' },
+	{ value: 'moonshotai/kimi-k2-thinking', label: 'Kimi K2 Thinking' },
 	{ value: 'anthropic/claude-opus-4.5', label: 'Claude Opus 4.5 (frontier)' },
 	{ value: 'anthropic/claude-haiku-4.5', label: 'Claude Haiku 4.5 (affordable)' },
 	{ value: 'openai/gpt-5.2', label: 'OpenAI GPT-5.2 (latest)' },
@@ -158,6 +164,7 @@ export const DEFAULT_SETTINGS: Settings = {
 	textAlign: DEFAULT_TEXT_ALIGN,
 	focusMode: false,
 	showReadingProgress: SHOW_READING_PROGRESS_DEFAULT,
+	indexOnlyWhenIdle: INDEX_ONLY_WHEN_IDLE_DEFAULT,
 	highlightColor: DEFAULT_HIGHLIGHT_COLOR,
 	llmProvider: DEFAULT_LLM_PROVIDER,
 	anthropicApiKey: '',
@@ -180,6 +187,7 @@ export const DEFAULT_READER_PROFILE: ReaderProfile = {
 	wordsLookedUp: 0,
 	helpfulResponses: [],
 	unhelpfulResponses: [],
+	bookStats: {},
 	updatedAt: Date.now()
 };
 

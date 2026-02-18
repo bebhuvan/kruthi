@@ -5,7 +5,7 @@
  */
 import type { Book } from '$lib/types/book';
 import type { Chunk, SearchScope } from '$lib/types/retrieval';
-import type { ChatMessage, ChatMode, Citation } from '$lib/types/chat';
+import type { AnswerStyle, ChatMessage, ChatMode, Citation } from '$lib/types/chat';
 import type { LLMProvider } from '$lib/types/settings';
 import type { ReaderProfile } from '$lib/types/readerProfile';
 import { LLMError } from '$lib/types/errors';
@@ -14,21 +14,16 @@ import { buildQaPrompt, isNotFoundResponse, parseCitations } from '$lib/services
 import { streamOpenRouter } from '$lib/services/openrouter';
 import { streamOpenAi } from '$lib/services/openai';
 import { streamGemini } from '$lib/services/gemini';
-import { buildConversationContext, formatForPrompt } from '$lib/services/conversationContext';
+import { buildConversationContext } from '$lib/services/conversationContext';
 import { buildAdaptiveSystemPrompt } from '$lib/services/personalization';
+import { resolveAnthropicModels, resolveOpenRouterModel } from '$lib/services/modelResolver';
 import { adapter } from '$lib/platform';
 import { SECURE_STORAGE_KEYS } from '$lib/config/constants';
+import { fetchWithRetry } from '$lib/utils/retry';
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
 const PROMPT_CACHE_BETA = 'prompt-caching-2024-07-31';
-// Model tiers for different use cases
-const MODELS = {
-	flagship: 'claude-sonnet-4-5-20251101',    // Best balance of quality/cost for chat
-	thinking: 'claude-opus-4-5-20251101',      // For deep analysis with extended thinking
-	fast: 'claude-haiku-4-5-20251101'          // For quick actions like define/explain
-} as const;
-const DEFAULT_MODEL = MODELS.flagship;
 const DEFAULT_MAX_TOKENS = 1024;
 const DEFAULT_THINKING_BUDGET = 8000;
 const DEFAULT_TOP_K = 12;
@@ -69,6 +64,7 @@ interface AnswerParams {
 	question: string;
 	scope: SearchScope;
 	mode: ChatMode;
+	answerStyle?: AnswerStyle;
 	chapterId?: string;
 	conversationHistory?: ChatMessage[];
 	maxHistoryTokens?: number;
@@ -76,6 +72,7 @@ interface AnswerParams {
 	useExtendedThinking?: boolean;
 	thinkingBudget?: number;
 	onToken?: (delta: string) => void;
+	signal?: AbortSignal;
 }
 
 interface AnswerResponse {
@@ -133,18 +130,24 @@ function resolveChapterScope(
 async function streamAnthropic(
 	apiKey: string,
 	body: Record<string, unknown>,
-	handlers: StreamHandlers
+	handlers: StreamHandlers,
+	signal?: AbortSignal
 ): Promise<StreamResult> {
-	const response = await fetch(API_URL, {
-		method: 'POST',
-		headers: {
-			'content-type': 'application/json',
-			'x-api-key': apiKey,
-			'anthropic-version': ANTHROPIC_VERSION,
-			'anthropic-beta': PROMPT_CACHE_BETA
+	const response = await fetchWithRetry(
+		API_URL,
+		{
+			method: 'POST',
+			signal,
+			headers: {
+				'content-type': 'application/json',
+				'x-api-key': apiKey,
+				'anthropic-version': ANTHROPIC_VERSION,
+				'anthropic-beta': PROMPT_CACHE_BETA
+			},
+			body: JSON.stringify({ ...body, stream: true })
 		},
-		body: JSON.stringify({ ...body, stream: true })
-	});
+		{ maxAttempts: 3 }
+	);
 
 	if (!response.ok) {
 		const message = await response.text();
@@ -299,6 +302,8 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 		adapter.getSecureValue(SECURE_STORAGE_KEYS.geminiApiKey)
 	]);
 	const resolvedScope = resolveChapterScope(params.scope, params.chapterId);
+	const resolvedOpenRouterModel = await resolveOpenRouterModel(params.openRouterModel);
+	const resolvedAnthropicModels = await resolveAnthropicModels(anthropicApiKey ?? '');
 	const results = await searchChunks(params.question, params.book.id, {
 		scope: resolvedScope.scope,
 		chapterId: resolvedScope.chapterId,
@@ -317,7 +322,8 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 		params.question,
 		resolvedScope.scope,
 		params.mode,
-		adaptiveSystemPrompt
+		adaptiveSystemPrompt,
+		params.answerStyle ?? 'balanced'
 	);
 
 	const conversationContext = params.conversationHistory
@@ -348,11 +354,12 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 	if (params.provider === 'openrouter') {
 		responseText = await streamOpenRouter({
 			apiKey: openRouterApiKey ?? '',
-			model: params.openRouterModel,
+			model: resolvedOpenRouterModel,
 			system: prompt.system,
 			user: prompt.user,
 			history: historyMessages,
-			onToken: params.onToken
+			onToken: params.onToken,
+			signal: params.signal
 		});
 	} else if (params.provider === 'openai') {
 		responseText = await streamOpenAi({
@@ -361,7 +368,8 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 			system: prompt.system,
 			user: prompt.user,
 			history: historyMessages,
-			onToken: params.onToken
+			onToken: params.onToken,
+			signal: params.signal
 		});
 	} else if (params.provider === 'gemini') {
 		responseText = await streamGemini({
@@ -370,12 +378,18 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 			system: prompt.system,
 			user: prompt.user,
 			history: historyMessages,
-			onToken: params.onToken
+			onToken: params.onToken,
+			signal: params.signal
 		});
 	} else {
+		if (!anthropicApiKey?.trim()) {
+			throw new LLMError('Anthropic API key is required.');
+		}
 		const buildAnthropicBody = (messages: Array<Record<string, unknown>>) => {
 			const body: Record<string, unknown> = {
-				model: DEFAULT_MODEL,
+				model: params.useExtendedThinking
+					? resolvedAnthropicModels.thinking
+					: resolvedAnthropicModels.flagship,
 				max_tokens: DEFAULT_MAX_TOKENS,
 				system: prompt.system,
 				messages,
@@ -389,11 +403,12 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 			return body;
 		};
 
-		let streamResult = await streamAnthropic(
-			anthropicApiKey ?? '',
-			buildAnthropicBody(initialMessages),
-			{ onText: params.onToken }
-		);
+			let streamResult = await streamAnthropic(
+				anthropicApiKey ?? '',
+				buildAnthropicBody(initialMessages),
+				{ onText: params.onToken },
+				params.signal
+			);
 
 		if (streamResult.toolCalls.length > 0) {
 			const toolResults = await Promise.all(
@@ -425,7 +440,8 @@ export async function streamAnswer(params: AnswerParams): Promise<AnswerResponse
 					{ role: 'assistant', content: toolUseBlocks },
 					{ role: 'user', content: toolResultBlocks }
 				]),
-				{ onText: params.onToken }
+				{ onText: params.onToken },
+				params.signal
 			);
 		}
 

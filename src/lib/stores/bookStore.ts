@@ -1,8 +1,9 @@
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import type { Book } from '$lib/types/book';
 import { parseEpub } from '$lib/services/epub';
 import { indexBook } from '$lib/services/retrieval';
 import { adapter, type BookMeta } from '$lib/platform';
+import { settingsStore } from '$lib/stores/settingsStore';
 
 type LoadingState = {
 	status: 'loading';
@@ -24,17 +25,25 @@ function isEpubFileName(name: string): boolean {
 	return name.toLowerCase().endsWith('.epub');
 }
 
-const INDEXING_IDLE_TIMEOUT_MS = 5000;
-const INDEXING_FALLBACK_DELAY_MS = 2000;
+const INDEXING_IDLE_TIMEOUT_MS = 15000;
+const INDEXING_FALLBACK_DELAY_MS = 8000;
+const INDEXING_IMMEDIATE_DELAY_MS = 300;
+const PARSED_BOOK_CACHE_LIMIT = 6;
+const parsedBookCache = new Map<string, Book>();
 
 function scheduleIndexing(book: Book): void {
+	const indexOnlyWhenIdle = get(settingsStore).indexOnlyWhenIdle;
 	const run = () => {
 		void indexBook(book, { generateEmbeddings: false }).catch((error) => {
 			console.error('Failed to index book for retrieval:', error);
 		});
 	};
 	if (typeof window === 'undefined') {
-		setTimeout(run, INDEXING_FALLBACK_DELAY_MS);
+		setTimeout(run, indexOnlyWhenIdle ? INDEXING_FALLBACK_DELAY_MS : INDEXING_IMMEDIATE_DELAY_MS);
+		return;
+	}
+	if (!indexOnlyWhenIdle) {
+		setTimeout(run, INDEXING_IMMEDIATE_DELAY_MS);
 		return;
 	}
 	const idle = (window as Window & {
@@ -44,6 +53,19 @@ function scheduleIndexing(book: Book): void {
 		idle(() => run(), { timeout: INDEXING_IDLE_TIMEOUT_MS });
 	} else {
 		setTimeout(run, INDEXING_FALLBACK_DELAY_MS);
+	}
+}
+
+function cacheParsedBook(book: Book): void {
+	if (parsedBookCache.has(book.id)) {
+		parsedBookCache.delete(book.id);
+	}
+	parsedBookCache.set(book.id, book);
+	if (parsedBookCache.size > PARSED_BOOK_CACHE_LIMIT) {
+		const first = parsedBookCache.keys().next().value;
+		if (first) {
+			parsedBookCache.delete(first);
+		}
 	}
 }
 
@@ -81,6 +103,7 @@ function createBookStore() {
 				const data = new Uint8Array(await file.arrayBuffer());
 				await adapter.saveBook(id, data, meta);
 				set({ status: 'ready', book: parsed, error: null });
+				cacheParsedBook(parsed);
 				// Defer indexing to idle time to avoid blocking initial render
 				scheduleIndexing(parsed);
 				return parsed;
@@ -115,6 +138,7 @@ function createBookStore() {
 				};
 				await adapter.saveBook(id, data, meta);
 				set({ status: 'ready', book: parsed, error: null });
+				cacheParsedBook(parsed);
 				// Defer indexing to idle time to avoid blocking initial render
 				scheduleIndexing(parsed);
 				return parsed;
@@ -125,6 +149,12 @@ function createBookStore() {
 			}
 		},
 		async loadFromId(id: string) {
+			const cached = parsedBookCache.get(id);
+			if (cached) {
+				set({ status: 'ready', book: cached, error: null });
+				scheduleIndexing(cached);
+				return cached;
+			}
 			update(() => ({ status: 'loading', book: null, error: null, progress: 0, stage: 'reading' }));
 			try {
 				const data = await adapter.loadBookData(id);
@@ -140,8 +170,9 @@ function createBookStore() {
 							error: null,
 							...progress
 						}))
-				});
+					});
 				set({ status: 'ready', book: parsed, error: null });
+				cacheParsedBook(parsed);
 				// Defer indexing to idle time to avoid blocking initial render
 				scheduleIndexing(parsed);
 				return parsed;
@@ -150,6 +181,9 @@ function createBookStore() {
 				set({ status: 'error', book: null, error: err });
 				throw err;
 			}
+		},
+		dropFromCache(id: string) {
+			parsedBookCache.delete(id);
 		}
 	};
 }

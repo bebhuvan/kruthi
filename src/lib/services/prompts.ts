@@ -4,7 +4,7 @@
  * Prompt templates and response parsing helpers for the chat experience.
  */
 import type { Chunk, SearchScope } from '$lib/types/retrieval';
-import type { ChatMode, Citation } from '$lib/types/chat';
+import type { AnswerStyle, ChatMode, Citation } from '$lib/types/chat';
 import type { HighlightAction } from '$lib/types/highlight';
 
 const GROUNDED_SYSTEM_INSTRUCTIONS = `Use ONLY the provided book excerpts to answer questions.
@@ -40,7 +40,8 @@ export function buildQaPrompt(
 	question: string,
 	scope: SearchScope,
 	mode: ChatMode,
-	customSystemPrompt?: string
+	customSystemPrompt?: string,
+	answerStyle: AnswerStyle = 'balanced'
 ): {
 	system: string;
 	user: string;
@@ -48,10 +49,17 @@ export function buildQaPrompt(
 	const scopeLabel = scope === 'current_chapter' ? 'current_chapter' : 'whole_book';
 	const excerptBlock = formatExcerpts(excerpts);
 
+	const styleInstructions: Record<AnswerStyle, string> = {
+		balanced: 'Keep a balanced depth with clear structure and practical clarity.',
+		brief: 'Be concise. Use short bullets and avoid long paragraphs.',
+		teacher: 'Explain as a patient teacher: define terms and walk through reasoning step by step.',
+		exam: 'Answer in exam-prep style: key points, evidence, and quick recall-friendly structure.'
+	};
+
 	const baseInstructions =
 		mode === 'companion' ? COMPANION_SYSTEM_INSTRUCTIONS : GROUNDED_SYSTEM_INSTRUCTIONS;
 	// Combine custom prompt with base instructions
-	const systemParts = [customSystemPrompt, baseInstructions].filter(Boolean);
+	const systemParts = [customSystemPrompt, baseInstructions, `Style: ${styleInstructions[answerStyle]}`].filter(Boolean);
 	const system = systemParts.join('\n\n');
 
 	return {
@@ -68,23 +76,72 @@ export function parseCitations(
 	chunkLookup: Map<string, Chunk>
 ): Citation[] {
 	const citations: Citation[] = [];
-	const regex = /-\s+"([^"]+)"\s+\(chunk_id:\s*([^,\)]+)(?:,\s*chapter:\s*([^\)]+))?\)/g;
+	const seen = new Set<string>();
+	const normalizeQuote = (value: string) =>
+		value
+			.trim()
+			.replace(/^[-*>\s]+/, '')
+			.replace(/^"(.*)"$/, '$1')
+			.trim();
+	const primaryRegexes = [
+		/-\s+"([^"]+)"\s+\((?:chunk[_\s-]?id|chunk):\s*([^,\)]+)(?:,\s*chapter:\s*([^\)]+))?\)/gi,
+		/"([^"]+)"\s+\((?:chunk[_\s-]?id|chunk):\s*([^,\)]+)(?:,\s*chapter:\s*([^\)]+))?\)/gi,
+		/>?\s*([^"\n][^\n]{8,}?)\s+\((?:chunk[_\s-]?id|chunk):\s*([^,\)]+)(?:,\s*chapter:\s*([^\)]+))?\)/gi
+	];
 
-	let match = regex.exec(responseText);
-	while (match) {
-		const quote = match[1]?.trim();
-		const chunkId = match[2]?.trim();
-		const chapterTitle = match[3]?.trim();
-		if (quote && chunkId) {
-			const chunk = chunkLookup.get(chunkId);
-			citations.push({
-				chunkId,
-				chapterId: chunk?.chapterId,
-				chapterTitle: chapterTitle || chunk?.chapterTitle,
-				quote
-			});
+	for (const regex of primaryRegexes) {
+		let match = regex.exec(responseText);
+		while (match) {
+			const quote = normalizeQuote(match[1] ?? '');
+			const chunkId = match[2]?.trim();
+			const chapterTitle = match[3]?.trim();
+			if (quote && chunkId) {
+				const dedupeKey = `${chunkId}::${quote}`;
+				const duplicateForChunk = citations.some(
+					(item) =>
+						item.chunkId === chunkId &&
+						(item.quote.includes(quote) || quote.includes(item.quote))
+				);
+				if (!seen.has(dedupeKey) && !duplicateForChunk) {
+					seen.add(dedupeKey);
+					const chunk = chunkLookup.get(chunkId);
+					citations.push({
+						chunkId,
+						chapterId: chunk?.chapterId,
+						chapterTitle: chapterTitle || chunk?.chapterTitle,
+						quote
+					});
+				}
+			}
+			match = regex.exec(responseText);
 		}
-		match = regex.exec(responseText);
+	}
+
+	// Structured fallback: if model mentions chunk IDs but omits quote formatting,
+	// synthesize citations using the chunk text preview.
+	if (citations.length === 0) {
+		const idRegex = /(?:chunk[_\s-]?id|chunk)\s*[:=]\s*([a-z0-9._:-]+)/gi;
+		let match = idRegex.exec(responseText);
+		while (match) {
+			const chunkId = match[1]?.trim();
+			if (chunkId) {
+				const chunk = chunkLookup.get(chunkId);
+				const quote = (chunk?.text ?? '').slice(0, 260).trim();
+				if (quote) {
+					const dedupeKey = `${chunkId}::${quote}`;
+					if (!seen.has(dedupeKey)) {
+						seen.add(dedupeKey);
+						citations.push({
+							chunkId,
+							chapterId: chunk?.chapterId,
+							chapterTitle: chunk?.chapterTitle,
+							quote
+						});
+					}
+				}
+			}
+			match = idRegex.exec(responseText);
+		}
 	}
 
 	return citations;

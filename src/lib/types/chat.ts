@@ -2,6 +2,7 @@ import type { SearchScope } from '$lib/types/retrieval';
 import type { FeedbackRating } from '$lib/types/readerProfile';
 
 export type ChatMode = 'grounded' | 'companion';
+export type AnswerStyle = 'balanced' | 'brief' | 'teacher' | 'exam';
 
 export interface Citation {
 	chunkId: string;
@@ -33,6 +34,7 @@ export interface ChatState {
 	isOpen: boolean;
 	scope: SearchScope;
 	mode: ChatMode;
+	answerStyle: AnswerStyle;
 	messages: ChatMessage[];
 	maxHistoryTokens: number;
 	isStreaming: boolean;

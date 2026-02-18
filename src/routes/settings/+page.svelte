@@ -379,6 +379,23 @@
 					</div>
 					<div class="setting-row">
 						<div class="setting-info">
+							<span class="setting-label">Index only when idle</span>
+							<span class="setting-description">Keeps reading smooth while search indexing runs in background</span>
+						</div>
+						<button
+							type="button"
+							class="toggle-switch"
+							class:active={$settingsStore.indexOnlyWhenIdle}
+							on:click={() => settingsStore.setIndexOnlyWhenIdle(!$settingsStore.indexOnlyWhenIdle)}
+							role="switch"
+							aria-checked={$settingsStore.indexOnlyWhenIdle}
+							aria-label="Toggle idle-only indexing"
+						>
+							<span class="toggle-knob"></span>
+						</button>
+					</div>
+					<div class="setting-row">
+						<div class="setting-info">
 							<span class="setting-label">Highlight color</span>
 							<span class="setting-description">Choose your preferred highlight color</span>
 						</div>

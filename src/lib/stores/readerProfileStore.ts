@@ -4,8 +4,11 @@ import { adapter } from '$lib/platform';
 import {
 	normalizeReaderProfile,
 	recordFeedback,
+	recordBookReadingMinutes,
+	recordChapterCompletion,
 	recordQuestion,
-	recordWordLookup
+	recordWordLookup,
+	setWeeklyGoal
 } from '$lib/services/personalization';
 import { DEFAULT_READER_PROFILE } from '$lib/config/constants';
 
@@ -76,14 +79,27 @@ function createReaderProfileStore() {
 					questionsAsked: 0
 				}
 			})),
-		recordReadingProgress: () =>
-			update((state) => ({
-				...state,
+		recordReadingProgress: (bookId?: string) => {
+			const state = getState();
+			const now = Date.now();
+			const last = state.session.lastProgressAt ?? now;
+			const elapsedMinutes = Math.min(2, Math.max(0, (now - last) / 60000));
+			let nextProfile = state.profile;
+			if (bookId && elapsedMinutes > 0) {
+				nextProfile = recordBookReadingMinutes(state.profile, bookId, elapsedMinutes);
+			}
+			update((current) => ({
+				...current,
+				profile: nextProfile,
 				session: {
-					...state.session,
-					lastProgressAt: Date.now()
+					...current.session,
+					lastProgressAt: now
 				}
-			})),
+			}));
+			if (bookId && elapsedMinutes > 0) {
+				void persist(nextProfile);
+			}
+		},
 		markSlowChapterPrompt: () =>
 			update((state) => ({
 				...state,
@@ -128,6 +144,31 @@ function createReaderProfileStore() {
 		recordFeedback: (messageId: string, rating: FeedbackRating, messageLength: number) => {
 			const state = getState();
 			const nextProfile = recordFeedback(state.profile, rating, messageId, messageLength);
+			update((current) => ({
+				...current,
+				profile: nextProfile,
+				status: 'ready',
+				error: null
+			}));
+			void persist(nextProfile);
+		},
+		setBookWeeklyGoal: (bookId: string, weeklyGoalMinutes: number) => {
+			const state = getState();
+			const nextProfile = setWeeklyGoal(state.profile, bookId, weeklyGoalMinutes);
+			update((current) => ({
+				...current,
+				profile: nextProfile,
+				status: 'ready',
+				error: null
+			}));
+			void persist(nextProfile);
+		},
+		markChapterCompleted: (bookId: string, chapterId: string) => {
+			const state = getState();
+			const nextProfile = recordChapterCompletion(state.profile, bookId, chapterId);
+			if (nextProfile === state.profile) {
+				return;
+			}
 			update((current) => ({
 				...current,
 				profile: nextProfile,

@@ -8,18 +8,15 @@ import { LLMError } from '$lib/types/errors';
 import { streamOpenRouter } from '$lib/services/openrouter';
 import { streamOpenAi } from '$lib/services/openai';
 import { streamGemini } from '$lib/services/gemini';
+import { resolveAnthropicModels, resolveOpenRouterModel } from '$lib/services/modelResolver';
 import { adapter } from '$lib/platform';
 import { SECURE_STORAGE_KEYS } from '$lib/config/constants';
+import { streamSSE, anthropicExtractor } from '$lib/utils/sse';
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
 const PROMPT_CACHE_BETA = 'prompt-caching-2024-07-31';
-const DEFAULT_MODEL = 'claude-3-5-sonnet-20240620';
 const DEFAULT_THINKING_BUDGET = 8000;
-
-interface StreamHandlers {
-	onText?: (delta: string) => void;
-}
 
 export interface LlmTextRequest {
 	provider: LLMProvider;
@@ -32,78 +29,7 @@ export interface LlmTextRequest {
 	useExtendedThinking?: boolean;
 	thinkingBudget?: number;
 	onToken?: (delta: string) => void;
-}
-
-async function streamAnthropic(
-	apiKey: string,
-	body: Record<string, unknown>,
-	handlers: StreamHandlers
-): Promise<string> {
-	const response = await fetch(API_URL, {
-		method: 'POST',
-		headers: {
-			'content-type': 'application/json',
-			'x-api-key': apiKey,
-			'anthropic-version': ANTHROPIC_VERSION,
-			'anthropic-beta': PROMPT_CACHE_BETA
-		},
-		body: JSON.stringify({ ...body, stream: true })
-	});
-
-	if (!response.ok) {
-		const message = await response.text();
-		throw new LLMError(`Anthropic API error: ${message}`, response.status);
-	}
-
-	if (!response.body) {
-		throw new LLMError('Anthropic API response missing body.');
-	}
-
-	const reader = response.body.getReader();
-	const decoder = new TextDecoder();
-	let buffer = '';
-	let fullText = '';
-
-	const handlePayload = (payload: Record<string, unknown>) => {
-		if (payload.type === 'content_block_delta') {
-			const delta = payload.delta as { type: 'text'; text: string } | undefined;
-			if (delta?.type === 'text') {
-				fullText += delta.text;
-				handlers.onText?.(delta.text);
-			}
-		}
-	};
-
-	while (true) {
-		const { value, done } = await reader.read();
-		if (done) {
-			break;
-		}
-		buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, '\n');
-		let boundary = buffer.indexOf('\n\n');
-		while (boundary !== -1) {
-			const chunk = buffer.slice(0, boundary);
-			buffer = buffer.slice(boundary + 2);
-			const lines = chunk.split('\n');
-			const data = lines
-				.filter((line) => line.startsWith('data:'))
-				.map((line) => line.replace(/^data:\s*/, ''))
-				.join('\n');
-			if (!data || data === '[DONE]') {
-				boundary = buffer.indexOf('\n\n');
-				continue;
-			}
-			try {
-				const payload = JSON.parse(data) as Record<string, unknown>;
-				handlePayload(payload);
-			} catch {
-				// Ignore malformed chunks from the stream.
-			}
-			boundary = buffer.indexOf('\n\n');
-		}
-	}
-
-	return fullText.trim();
+	signal?: AbortSignal;
 }
 
 export async function streamLlmText(params: LlmTextRequest): Promise<string> {
@@ -114,13 +40,17 @@ export async function streamLlmText(params: LlmTextRequest): Promise<string> {
 		adapter.getSecureValue(SECURE_STORAGE_KEYS.geminiApiKey)
 	]);
 
+	const resolvedOpenRouterModel = await resolveOpenRouterModel(params.openRouterModel);
+	const resolvedAnthropicModels = await resolveAnthropicModels(anthropicApiKey ?? '');
+
 	if (params.provider === 'openrouter') {
 		return await streamOpenRouter({
 			apiKey: openRouterApiKey ?? '',
-			model: params.openRouterModel,
+			model: resolvedOpenRouterModel,
 			system: params.system,
 			user: params.user,
-			onToken: params.onToken
+			onToken: params.onToken,
+			signal: params.signal
 		});
 	}
 
@@ -130,7 +60,8 @@ export async function streamLlmText(params: LlmTextRequest): Promise<string> {
 			model: params.openAiModel,
 			system: params.system,
 			user: params.user,
-			onToken: params.onToken
+			onToken: params.onToken,
+			signal: params.signal
 		});
 	}
 
@@ -140,7 +71,8 @@ export async function streamLlmText(params: LlmTextRequest): Promise<string> {
 			model: params.geminiModel,
 			system: params.system,
 			user: params.user,
-			onToken: params.onToken
+			onToken: params.onToken,
+			signal: params.signal
 		});
 	}
 
@@ -148,30 +80,41 @@ export async function streamLlmText(params: LlmTextRequest): Promise<string> {
 		throw new LLMError('Anthropic API key is required.');
 	}
 
-	return await streamAnthropic(
-		anthropicApiKey,
+	return await streamSSE(
 		{
-			model: DEFAULT_MODEL,
-			max_tokens: params.maxTokens,
-			system: params.system,
-			messages: [
-				{
-					role: 'user',
-					content: [{ type: 'text', text: params.user }]
-				}
-			],
-			...(params.useExtendedThinking
-				? {
-						thinking: {
-							type: 'enabled',
-							budget_tokens: Math.max(
-								1000,
-								params.thinkingBudget ?? DEFAULT_THINKING_BUDGET
-							)
-						}
-				  }
-				: {})
+			url: API_URL,
+			provider: 'Anthropic',
+			headers: {
+				'x-api-key': anthropicApiKey,
+				'anthropic-version': ANTHROPIC_VERSION,
+				'anthropic-beta': PROMPT_CACHE_BETA
+			},
+			body: {
+				model: params.useExtendedThinking
+					? resolvedAnthropicModels.thinking
+					: resolvedAnthropicModels.flagship,
+				max_tokens: params.maxTokens,
+				system: params.system,
+				messages: [
+					{
+						role: 'user',
+						content: [{ type: 'text', text: params.user }]
+					}
+				],
+				...(params.useExtendedThinking
+					? {
+							thinking: {
+								type: 'enabled',
+								budget_tokens: Math.max(
+									1000,
+									params.thinkingBudget ?? DEFAULT_THINKING_BUDGET
+								)
+							}
+					  }
+					: {})
+			}
 		},
-		{ onText: params.onToken }
+		anthropicExtractor,
+		{ onText: params.onToken, signal: params.signal }
 	);
 }

@@ -6,6 +6,7 @@
 import type {
 	ReaderProfile,
 	ReaderSession,
+	BookReadingStats,
 	FeedbackRating,
 	ProactiveSuggestion,
 	VocabularyLevel,
@@ -17,12 +18,40 @@ import { DEFAULT_READER_PROFILE } from '$lib/config/constants';
 const MAX_FEEDBACK_HISTORY = 50;
 const SLOW_CHAPTER_MINUTES = 8;
 const SLOW_CHAPTER_COOLDOWN_MS = 15 * 60 * 1000;
+const DEFAULT_WEEKLY_GOAL_MINUTES = 120;
 
 function clampHistory(items: string[]): string[] {
 	if (items.length <= MAX_FEEDBACK_HISTORY) {
 		return items;
 	}
 	return items.slice(-MAX_FEEDBACK_HISTORY);
+}
+
+function getWeekStart(timestamp: number): number {
+	const date = new Date(timestamp);
+	const day = date.getDay();
+	const diff = date.getDate() - day;
+	const weekStart = new Date(date);
+	weekStart.setDate(diff);
+	weekStart.setHours(0, 0, 0, 0);
+	return weekStart.getTime();
+}
+
+function ensureBookStats(profile: ReaderProfile, bookId: string): BookReadingStats {
+	const existing = profile.bookStats[bookId];
+	if (existing) {
+		return existing;
+	}
+	const now = Date.now();
+	return {
+		bookId,
+		weeklyGoalMinutes: DEFAULT_WEEKLY_GOAL_MINUTES,
+		weeklyMinutesRead: 0,
+		weekStartAt: getWeekStart(now),
+		totalMinutesRead: 0,
+		completedChapterIds: [],
+		lastReadAt: now
+	};
 }
 
 function inferVocabularyLevel(wordsLookedUp: number): VocabularyLevel {
@@ -124,6 +153,72 @@ export function recordFeedback(
 			rating,
 			messageLength
 		),
+		updatedAt: Date.now()
+	};
+}
+
+export function setWeeklyGoal(
+	profile: ReaderProfile,
+	bookId: string,
+	weeklyGoalMinutes: number
+): ReaderProfile {
+	const current = ensureBookStats(profile, bookId);
+	const capped = Math.max(30, Math.min(1200, Math.round(weeklyGoalMinutes)));
+	return {
+		...profile,
+		bookStats: {
+			...profile.bookStats,
+			[bookId]: { ...current, weeklyGoalMinutes: capped, lastReadAt: Date.now() }
+		},
+		updatedAt: Date.now()
+	};
+}
+
+export function recordBookReadingMinutes(
+	profile: ReaderProfile,
+	bookId: string,
+	minutes: number
+): ReaderProfile {
+	const current = ensureBookStats(profile, bookId);
+	const now = Date.now();
+	const weekStart = getWeekStart(now);
+	const sameWeek = current.weekStartAt === weekStart;
+	const safeMinutes = Math.max(0, minutes);
+	return {
+		...profile,
+		bookStats: {
+			...profile.bookStats,
+			[bookId]: {
+				...current,
+				weeklyMinutesRead: (sameWeek ? current.weeklyMinutesRead : 0) + safeMinutes,
+				weekStartAt: weekStart,
+				totalMinutesRead: current.totalMinutesRead + safeMinutes,
+				lastReadAt: now
+			}
+		},
+		updatedAt: now
+	};
+}
+
+export function recordChapterCompletion(
+	profile: ReaderProfile,
+	bookId: string,
+	chapterId: string
+): ReaderProfile {
+	const current = ensureBookStats(profile, bookId);
+	if (current.completedChapterIds.includes(chapterId)) {
+		return profile;
+	}
+	return {
+		...profile,
+		bookStats: {
+			...profile.bookStats,
+			[bookId]: {
+				...current,
+				completedChapterIds: [...current.completedChapterIds, chapterId],
+				lastReadAt: Date.now()
+			}
+		},
 		updatedAt: Date.now()
 	};
 }

@@ -112,6 +112,7 @@
 		e.stopPropagation();
 		if (confirm('Remove this book from your library?')) {
 			await adapter.deleteBook(bookId);
+			bookStore.dropFromCache(bookId);
 			await refreshBooks();
 		}
 	};
