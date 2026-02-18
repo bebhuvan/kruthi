@@ -315,6 +315,78 @@ button:focus-visible {
   gap: 1.25rem;
 }
 
+.install {
+  padding-top: 74px;
+}
+
+.install-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.install-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: 1rem 1rem 1.1rem;
+}
+
+.install-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.install-card p {
+  margin: 0.7rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.58;
+}
+
+.install-card pre {
+  margin: 0.8rem 0 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: #fbf9f5;
+  padding: 0.7rem 0.75rem;
+  overflow-x: auto;
+}
+
+.install-card code {
+  font-family: "SF Mono", "Consolas", monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #3c352d;
+}
+
+.text-link {
+  display: inline-flex;
+  margin-top: 0.72rem;
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.install-note {
+  margin-top: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  background: #fff;
+}
+
+.install-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
 .trust-list {
   list-style: none;
   margin: 0;
@@ -422,6 +494,10 @@ button:focus-visible {
   .trust-wrap {
     grid-template-columns: 1fr;
   }
+
+  .install-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
@@ -438,13 +514,20 @@ button:focus-visible {
   }
 
   .feature-grid,
-  .showcase-grid {
+  .showcase-grid,
+  .install-grid {
     grid-template-columns: 1fr;
   }
 
   .download-wrap,
+  .install-note,
   .trust-wrap {
     padding: 1.2rem;
+  }
+
+  .install-note {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
